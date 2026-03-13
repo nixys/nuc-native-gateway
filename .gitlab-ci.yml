@@ -1,9 +1,10 @@
 stages:
+  - validate
+
   - lint
   - unit-tests
   - compatibility_tests
   - render
-  - validate
 
 variables:
   CHART_DIR: "."
@@ -64,7 +65,7 @@ render_manifests:
 
 kubeconform_validate:
   image:
-    name: golang:1.25
+    name: openpolicyagent/conftest:v0.66.0
   stage: validate
   needs:
     - job: render_manifests
