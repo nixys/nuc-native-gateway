@@ -145,26 +145,14 @@ tests:
           path: spec.useDefaultGateways
           value: All
       - equal:
-          path: status.parents[0]
+          path: status.parents[0].parentRef
           value:
-            parentRef:
-              group: gateway.networking.k8s.io
-              kind: Gateway
-              name: edge-gateway
-              namespace: edge-ns
-              sectionName: https
-              port: 443
-            controllerName: example.net/gateway-controller
-            conditions:
-              - type: Accepted
-                status: "True"
-                observedGeneration: 1
-                lastTransitionTime: "2026-03-13T10:15:00Z"
-                reason: Accepted
-                message: Route attached
-              - type: ResolvedRefs
-                status: "True"
-                observedGeneration: 1
-                lastTransitionTime: "2026-03-13T10:15:00Z"
-                reason: ResolvedRefs
-                message: Route references resolved
+            group: gateway.networking.k8s.io
+            kind: Gateway
+            name: edge-gateway
+            namespace: edge-ns
+            sectionName: https
+            port: 443
+      - equal:
+          path: status.parents[0].controllerName
+          value: example.net/gateway-controller

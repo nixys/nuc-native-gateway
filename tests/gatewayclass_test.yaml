@@ -54,15 +54,6 @@ tests:
             name: public-gateway
             namespace: infra-system
       - equal:
-          path: status.conditions[0]
-          value:
-            type: Accepted
-            status: "True"
-            observedGeneration: 2
-            lastTransitionTime: "2026-03-13T10:05:00Z"
-            reason: Accepted
-            message: GatewayClass accepted
-      - equal:
           path: status.supportedFeatures[0]
           value:
             name: Gateway

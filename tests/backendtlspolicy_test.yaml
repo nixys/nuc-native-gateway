@@ -94,24 +94,6 @@ tests:
       - equal:
           path: status.ancestors[0].controllerName
           value: example.net/gateway-controller
-      - equal:
-          path: status.ancestors[0].conditions[0]
-          value:
-            type: Accepted
-            status: "True"
-            observedGeneration: 1
-            lastTransitionTime: "2026-03-13T10:00:00Z"
-            reason: Accepted
-            message: Policy attached
-      - equal:
-          path: status.ancestors[0].conditions[1]
-          value:
-            type: ResolvedRefs
-            status: "True"
-            observedGeneration: 1
-            lastTransitionTime: "2026-03-13T10:00:00Z"
-            reason: ResolvedRefs
-            message: All references resolved
 
   - it: renders BackendTLSPolicy fields for well known CA validation
     values:

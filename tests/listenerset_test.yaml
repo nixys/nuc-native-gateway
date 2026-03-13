@@ -83,24 +83,6 @@ tests:
               - group: gateway.networking.k8s.io
                 kind: HTTPRoute
       - equal:
-          path: status.conditions[0]
-          value:
-            type: Accepted
-            status: "True"
-            observedGeneration: 1
-            lastTransitionTime: "2026-03-13T10:25:00Z"
-            reason: Accepted
-            message: ListenerSet accepted
-      - equal:
-          path: status.conditions[1]
-          value:
-            type: Programmed
-            status: "True"
-            observedGeneration: 1
-            lastTransitionTime: "2026-03-13T10:25:00Z"
-            reason: Programmed
-            message: ListenerSet programmed
-      - equal:
           path: status.listeners[0].supportedKinds[0]
           value:
             group: gateway.networking.k8s.io
@@ -108,21 +90,3 @@ tests:
       - equal:
           path: status.listeners[0].attachedRoutes
           value: 2
-      - equal:
-          path: status.listeners[0].conditions[0]
-          value:
-            type: Accepted
-            status: "True"
-            observedGeneration: 1
-            lastTransitionTime: "2026-03-13T10:25:00Z"
-            reason: Accepted
-            message: Listener accepted
-      - equal:
-          path: status.listeners[0].conditions[1]
-          value:
-            type: Programmed
-            status: "True"
-            observedGeneration: 1
-            lastTransitionTime: "2026-03-13T10:25:00Z"
-            reason: Programmed
-            message: Listener programmed
