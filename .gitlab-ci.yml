@@ -60,7 +60,6 @@ render_manifests:
     - echo "🔧 RENDER_DIR=$RENDER_DIR"
     - echo "🔧 RELEASE_NAME=$RELEASE_NAME"
     - echo "🔧 RELEASE_NAMESPACE=$RELEASE_NAMESPACE"
-    - echo "🔧 Текущая директория: $(pwd)"
     
     # === 2. ПРОВЕРКА CHART ===
     - |
@@ -95,8 +94,7 @@ render_manifests:
     - echo "📊 Анализ $RENDER_DIR/all.yaml:"
     - ls -la "$RENDER_DIR/all.yaml"
     - FILE_SIZE=$(stat -c%s "$RENDER_DIR/all.yaml" 2>/dev/null || stat -f%z "$RENDER_DIR/all.yaml")
-    - echo "   Размер: $FILE_SIZE байт"
-    - echo "   Строки: $(wc -l < "$RENDER_DIR/all.yaml")"
+
     
     # === 8. ПОКАЗАТЬ СОДЕРЖИМОЕ ===
     - echo "🔍 Содержимое файла (первые 100 строк):"
@@ -104,7 +102,6 @@ render_manifests:
     
     # === 9. ПОИСК РЕСУРСОВ ===
     - RESOURCE_COUNT=$(grep -cE '^[[:space:]]*kind:' "$RENDER_DIR/all.yaml" 2>/dev/null || echo 0)
-    - echo "✅ Найдено ресурсов: $RESOURCE_COUNT"
     
     # === 10. ЗАВЕРШИТЬ С ОШИБКОЙ ЕСЛИ ПУСТО ===
     - |
