@@ -71,4 +71,4 @@ kubeconform_validate:
     - job: render_manifests
       artifacts: true
   script:
-  - /kubeconform -summary -strict -output json kubeconfigs/ "$RENDER_DIR/all.yaml"
+  - /kubeconform -summary -strict -output json kubeconfigs/ -kubernetes-version "$KUBE_VERSION" "$RENDER_DIR/all.yaml"
