@@ -1,11 +1,13 @@
 stages:
+  - lint
   - test
+  - policy
 
 lint:
   image:
     name: alpine/helm:4
     entrypoint: ["/bin/sh", "-c"]
-  stage: test
+  stage: lint
   script:
     - helm dependency update
     - helm lint .
@@ -31,3 +33,15 @@ compatibility_tests:
     - git fetch --tags --force
   script:
     - sh tests/backward_compatibility_test.sh
+
+datree_policy_check:
+  image:
+    name: alpine/helm:4
+    entrypoint: ["/bin/sh", "-c"]
+  stage: policy
+  before_script:
+    - apk add --no-cache bash curl git unzip
+    - helm dependency update
+    - helm plugin install https://github.com/datreeio/helm-datree --verify=false
+  script:
+    - helm datree test .
