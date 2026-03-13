@@ -1,0 +1,117 @@
+commonLabels:
+  platform: gateway-api
+commonAnnotations:
+  team: edge
+
+grpcRoutes:
+  - name: inventory-grpc
+    namespace: apps
+    labels:
+      component: grpc-route
+    annotations:
+      note: grpc
+    spec:
+      parentRefs:
+        - group: gateway.networking.k8s.io
+          kind: Gateway
+          name: edge-gateway
+          namespace: edge-ns
+          sectionName: https
+          port: 443
+      hostnames:
+        - grpc.example.com
+      rules:
+        - name: inventory
+          matches:
+            - method:
+                type: Exact
+                service: inventory.v1.InventoryService
+                method: GetItem
+              headers:
+                - type: Exact
+                  name: x-version
+                  value: v1
+          filters:
+            - type: RequestHeaderModifier
+              requestHeaderModifier:
+                add:
+                  - name: x-grpc-added
+                    value: "true"
+                set:
+                  - name: x-grpc-set
+                    value: stable
+                remove:
+                  - x-remove-me
+            - type: ResponseHeaderModifier
+              responseHeaderModifier:
+                add:
+                  - name: x-grpc-response
+                    value: present
+                set:
+                  - name: x-grpc-release
+                    value: canary
+                remove:
+                  - x-strip-me
+            - type: RequestMirror
+              requestMirror:
+                backendRef:
+                  group: ""
+                  kind: Service
+                  name: inventory-shadow
+                  namespace: shadow
+                  port: 9090
+                fraction:
+                  numerator: 1
+                  denominator: 10
+            - type: ExtensionRef
+              extensionRef:
+                group: example.net
+                kind: GrpcFilter
+                name: authz
+          backendRefs:
+            - group: ""
+              kind: Service
+              name: inventory-svc
+              namespace: apps
+              port: 9090
+              weight: 90
+              filters:
+                - type: RequestHeaderModifier
+                  requestHeaderModifier:
+                    add:
+                      - name: x-backend
+                        value: inventory
+            - group: ""
+              kind: Service
+              name: inventory-canary
+              port: 9090
+              weight: 10
+          sessionPersistence:
+            sessionName: grpc-session
+            absoluteTimeout: 1h
+            idleTimeout: 5m
+            type: Header
+      useDefaultGateways: All
+    status:
+      parents:
+        - parentRef:
+            group: gateway.networking.k8s.io
+            kind: Gateway
+            name: edge-gateway
+            namespace: edge-ns
+            sectionName: https
+            port: 443
+          controllerName: example.net/gateway-controller
+          conditions:
+            - type: Accepted
+              status: "True"
+              observedGeneration: 1
+              lastTransitionTime: "2026-03-13T10:15:00Z"
+              reason: Accepted
+              message: Route attached
+            - type: ResolvedRefs
+              status: "True"
+              observedGeneration: 1
+              lastTransitionTime: "2026-03-13T10:15:00Z"
+              reason: ResolvedRefs
+              message: Route references resolved

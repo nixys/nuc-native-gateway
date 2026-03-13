@@ -1,0 +1,42 @@
+# Override the default chart label name if needed.
+nameOverride: ""
+
+# Extra labels/annotations applied to every rendered resource.
+commonLabels: {}
+commonAnnotations: {}
+
+# The defaults below are aligned with the current Gateway API standard channel.
+# Override them if your cluster uses another bundle version.
+apiVersions:
+  backendTLSPolicy: gateway.networking.k8s.io/v1
+  gatewayClass: gateway.networking.k8s.io/v1
+  gateway: gateway.networking.k8s.io/v1
+  grpcRoute: gateway.networking.k8s.io/v1
+  httpRoute: gateway.networking.k8s.io/v1
+  listenerSet: gateway.networking.k8s.io/v1
+  referenceGrant: gateway.networking.k8s.io/v1
+  tlsRoute: gateway.networking.k8s.io/v1
+
+# Each list item supports:
+# - name: required
+# - namespace: optional for namespaced resources, defaults to the release namespace
+# - labels: optional
+# - annotations: optional
+# - apiVersion: optional override for a single resource
+# - spec: arbitrary resource spec
+
+backendTLSPolicies: []
+
+gatewayClasses: []
+
+gateways: []
+
+grpcRoutes: []
+
+httpRoutes: []
+
+listenerSets: []
+
+referenceGrants: []
+
+tlsRoutes: []

@@ -1,0 +1,71 @@
+commonLabels:
+  platform: gateway-api
+commonAnnotations:
+  team: edge
+
+backendTLSPolicies:
+  - name: backend-tls-with-ca
+    namespace: app-a
+    labels:
+      component: backend-tls
+    annotations:
+      note: ca-bundle
+    spec:
+      targetRefs:
+        - group: ""
+          kind: Service
+          name: payments
+          sectionName: https
+      validation:
+        hostname: payments.internal.example.com
+        caCertificateRefs:
+          - group: ""
+            kind: ConfigMap
+            name: payments-ca
+        subjectAltNames:
+          - type: Hostname
+            hostname: payments.internal.example.com
+          - type: URI
+            uri: spiffe://cluster.local/ns/app-a/sa/payments
+      options:
+        example.com/min-version: "1.3"
+        example.com/cipher-suites: TLS_AES_128_GCM_SHA256
+    status:
+      ancestors:
+        - ancestorRef:
+            group: gateway.networking.k8s.io
+            kind: Gateway
+            name: edge-gateway
+            namespace: edge-ns
+            sectionName: https
+            port: 443
+          controllerName: example.net/gateway-controller
+          conditions:
+            - type: Accepted
+              status: "True"
+              observedGeneration: 1
+              lastTransitionTime: "2026-03-13T10:00:00Z"
+              reason: Accepted
+              message: Policy attached
+            - type: ResolvedRefs
+              status: "True"
+              observedGeneration: 1
+              lastTransitionTime: "2026-03-13T10:00:00Z"
+              reason: ResolvedRefs
+              message: All references resolved
+  - name: backend-tls-with-wellknown
+    namespace: app-b
+    labels:
+      component: backend-tls
+    annotations:
+      note: system-ca
+    spec:
+      targetRefs:
+        - group: ""
+          kind: Service
+          name: ledger
+      validation:
+        hostname: ledger.internal.example.com
+        wellKnownCACertificates: System
+      options:
+        example.com/min-version: "1.2"

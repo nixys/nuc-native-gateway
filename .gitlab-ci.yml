@@ -1,0 +1,33 @@
+stages:
+  - test
+
+lint:
+  image:
+    name: alpine/helm:4
+    entrypoint: ["/bin/sh", "-c"]
+  stage: test
+  script:
+    - helm dependency update
+    - helm lint .
+
+unit_tests:
+  image:
+    name: alpine/helm:4
+    entrypoint: ["/bin/sh", "-c"]
+  stage: test
+  script:
+    - helm plugin install https://github.com/helm-unittest/helm-unittest.git --verify=false
+    - helm unittest .
+
+compatibility_tests:
+  image:
+    name: alpine/helm:4
+    entrypoint: ["/bin/sh", "-c"]
+  stage: test
+  variables:
+    GIT_DEPTH: "0"
+  before_script:
+    - apk add --no-cache git
+    - git fetch --tags --force
+  script:
+    - sh tests/backward_compatibility_test.sh

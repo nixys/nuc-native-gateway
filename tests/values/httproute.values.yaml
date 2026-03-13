@@ -1,0 +1,178 @@
+commonLabels:
+  platform: gateway-api
+commonAnnotations:
+  team: edge
+
+httpRoutes:
+  - name: api-http
+    namespace: apps
+    labels:
+      component: http-route
+    annotations:
+      note: http
+    spec:
+      parentRefs:
+        - group: gateway.networking.k8s.io
+          kind: Gateway
+          name: edge-gateway
+          namespace: edge-ns
+          sectionName: https
+          port: 443
+      hostnames:
+        - api.example.com
+        - "*.example.com"
+      rules:
+        - name: api-v1
+          matches:
+            - path:
+                type: PathPrefix
+                value: /api
+              headers:
+                - type: Exact
+                  name: x-env
+                  value: prod
+              queryParams:
+                - type: Exact
+                  name: version
+                  value: v1
+              method: GET
+          filters:
+            - type: RequestHeaderModifier
+              requestHeaderModifier:
+                add:
+                  - name: x-added
+                    value: request
+                set:
+                  - name: x-set
+                    value: stable
+                remove:
+                  - x-remove
+            - type: ResponseHeaderModifier
+              responseHeaderModifier:
+                add:
+                  - name: x-response-added
+                    value: response
+                set:
+                  - name: x-response-set
+                    value: stable
+                remove:
+                  - x-response-remove
+            - type: RequestMirror
+              requestMirror:
+                backendRef:
+                  group: ""
+                  kind: Service
+                  name: api-shadow
+                  namespace: shadow
+                  port: 8080
+                percent: 15
+            - type: ExtensionRef
+              extensionRef:
+                group: example.net
+                kind: HttpFilter
+                name: authz
+            - type: CORS
+              cors:
+                allowOrigins:
+                  - https://app.example.com
+                  - https://*.example.net
+                allowMethods:
+                  - GET
+                  - POST
+                allowHeaders:
+                  - Authorization
+                  - X-Trace-Id
+                exposeHeaders:
+                  - X-Response-Time
+                maxAge: 24h
+                allowCredentials: true
+          backendRefs:
+            - group: ""
+              kind: Service
+              name: api-svc
+              namespace: backend
+              port: 8080
+              weight: 80
+              filters:
+                - type: RequestHeaderModifier
+                  requestHeaderModifier:
+                    add:
+                      - name: x-backend
+                        value: api
+            - group: ""
+              kind: Service
+              name: api-canary
+              port: 8080
+              weight: 20
+          timeouts:
+            request: 30s
+            backendRequest: 10s
+          retry:
+            codes:
+              - 500
+              - 502
+            attempts: 3
+            backoff: 100ms
+          sessionPersistence:
+            sessionName: http-session
+            absoluteTimeout: 1h
+            idleTimeout: 10m
+            type: Cookie
+            cookieConfig:
+              lifetimeType: Permanent
+        - name: redirect-login
+          matches:
+            - path:
+                type: Exact
+                value: /login
+          filters:
+            - type: RequestRedirect
+              requestRedirect:
+                scheme: https
+                hostname: login.example.com
+                path:
+                  type: ReplaceFullPath
+                  replaceFullPath: /signin
+                port: 8443
+                statusCode: 302
+        - name: rewrite-v2
+          matches:
+            - path:
+                type: PathPrefix
+                value: /v2
+          filters:
+            - type: URLRewrite
+              urlRewrite:
+                hostname: internal.example.com
+                path:
+                  type: ReplacePrefixMatch
+                  replacePrefixMatch: /internal
+          backendRefs:
+            - group: ""
+              kind: Service
+              name: internal-svc
+              port: 8080
+      useDefaultGateways: All
+    status:
+      parents:
+        - parentRef:
+            group: gateway.networking.k8s.io
+            kind: Gateway
+            name: edge-gateway
+            namespace: edge-ns
+            sectionName: https
+            port: 443
+          controllerName: example.net/gateway-controller
+          conditions:
+            - type: Accepted
+              status: "True"
+              observedGeneration: 1
+              lastTransitionTime: "2026-03-13T10:20:00Z"
+              reason: Accepted
+              message: Route attached
+            - type: ResolvedRefs
+              status: "True"
+              observedGeneration: 1
+              lastTransitionTime: "2026-03-13T10:20:00Z"
+              reason: ResolvedRefs
+              message: Route references resolved

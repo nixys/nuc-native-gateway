@@ -1,0 +1,138 @@
+suite: backendtlspolicy template
+templates:
+  - templates/backendtlspolicy.yaml
+release:
+  name: unit-test
+  namespace: unit-namespace
+
+tests:
+  - it: renders no BackendTLSPolicy documents by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders both BackendTLSPolicy variants from the fixture
+    values:
+      - tests/values/backendtlspolicy.values.yaml
+    asserts:
+      - hasDocuments:
+          count: 2
+
+  - it: renders BackendTLSPolicy fields for CA bundle validation
+    values:
+      - tests/values/backendtlspolicy.values.yaml
+    documentSelector:
+      path: metadata.name
+      value: backend-tls-with-ca
+    asserts:
+      - isKind:
+          of: BackendTLSPolicy
+      - equal:
+          path: apiVersion
+          value: gateway.networking.k8s.io/v1
+      - equal:
+          path: metadata.namespace
+          value: app-a
+      - equal:
+          path: metadata.labels.platform
+          value: gateway-api
+      - equal:
+          path: metadata.labels.component
+          value: backend-tls
+      - equal:
+          path: metadata.labels["app.kubernetes.io/name"]
+          value: nuc-native-gateway
+      - equal:
+          path: metadata.labels["app.kubernetes.io/instance"]
+          value: unit-test
+      - equal:
+          path: metadata.annotations.team
+          value: edge
+      - equal:
+          path: metadata.annotations.note
+          value: ca-bundle
+      - equal:
+          path: spec.targetRefs[0]
+          value:
+            group: ""
+            kind: Service
+            name: payments
+            sectionName: https
+      - equal:
+          path: spec.validation.hostname
+          value: payments.internal.example.com
+      - equal:
+          path: spec.validation.caCertificateRefs[0]
+          value:
+            group: ""
+            kind: ConfigMap
+            name: payments-ca
+      - equal:
+          path: spec.validation.subjectAltNames[0]
+          value:
+            type: Hostname
+            hostname: payments.internal.example.com
+      - equal:
+          path: spec.validation.subjectAltNames[1]
+          value:
+            type: URI
+            uri: spiffe://cluster.local/ns/app-a/sa/payments
+      - equal:
+          path: spec.options
+          value:
+            example.com/min-version: "1.3"
+            example.com/cipher-suites: TLS_AES_128_GCM_SHA256
+      - equal:
+          path: status.ancestors[0].ancestorRef
+          value:
+            group: gateway.networking.k8s.io
+            kind: Gateway
+            name: edge-gateway
+            namespace: edge-ns
+            sectionName: https
+            port: 443
+      - equal:
+          path: status.ancestors[0].controllerName
+          value: example.net/gateway-controller
+      - equal:
+          path: status.ancestors[0].conditions[0]
+          value:
+            type: Accepted
+            status: "True"
+            observedGeneration: 1
+            lastTransitionTime: "2026-03-13T10:00:00Z"
+            reason: Accepted
+            message: Policy attached
+      - equal:
+          path: status.ancestors[0].conditions[1]
+          value:
+            type: ResolvedRefs
+            status: "True"
+            observedGeneration: 1
+            lastTransitionTime: "2026-03-13T10:00:00Z"
+            reason: ResolvedRefs
+            message: All references resolved
+
+  - it: renders BackendTLSPolicy fields for well known CA validation
+    values:
+      - tests/values/backendtlspolicy.values.yaml
+    documentSelector:
+      path: metadata.name
+      value: backend-tls-with-wellknown
+    asserts:
+      - equal:
+          path: spec.targetRefs[0]
+          value:
+            group: ""
+            kind: Service
+            name: ledger
+      - equal:
+          path: spec.validation.hostname
+          value: ledger.internal.example.com
+      - equal:
+          path: spec.validation.wellKnownCACertificates
+          value: System
+      - equal:
+          path: spec.options
+          value:
+            example.com/min-version: "1.2"

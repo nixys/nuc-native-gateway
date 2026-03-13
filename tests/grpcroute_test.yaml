@@ -1,0 +1,170 @@
+suite: grpcroute template
+templates:
+  - templates/grpcroute.yaml
+release:
+  name: unit-test
+  namespace: unit-namespace
+
+tests:
+  - it: renders no GRPCRoute documents by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders GRPCRoute fields from the fixture
+    values:
+      - tests/values/grpcroute.values.yaml
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: GRPCRoute
+      - equal:
+          path: apiVersion
+          value: gateway.networking.k8s.io/v1
+      - equal:
+          path: metadata.name
+          value: inventory-grpc
+      - equal:
+          path: metadata.namespace
+          value: apps
+      - equal:
+          path: metadata.labels.platform
+          value: gateway-api
+      - equal:
+          path: metadata.labels.component
+          value: grpc-route
+      - equal:
+          path: metadata.annotations.note
+          value: grpc
+      - equal:
+          path: spec.parentRefs[0]
+          value:
+            group: gateway.networking.k8s.io
+            kind: Gateway
+            name: edge-gateway
+            namespace: edge-ns
+            sectionName: https
+            port: 443
+      - equal:
+          path: spec.hostnames[0]
+          value: grpc.example.com
+      - equal:
+          path: spec.rules[0].name
+          value: inventory
+      - equal:
+          path: spec.rules[0].matches[0]
+          value:
+            method:
+              type: Exact
+              service: inventory.v1.InventoryService
+              method: GetItem
+            headers:
+              - type: Exact
+                name: x-version
+                value: v1
+      - equal:
+          path: spec.rules[0].filters[0]
+          value:
+            type: RequestHeaderModifier
+            requestHeaderModifier:
+              add:
+                - name: x-grpc-added
+                  value: "true"
+              set:
+                - name: x-grpc-set
+                  value: stable
+              remove:
+                - x-remove-me
+      - equal:
+          path: spec.rules[0].filters[1]
+          value:
+            type: ResponseHeaderModifier
+            responseHeaderModifier:
+              add:
+                - name: x-grpc-response
+                  value: present
+              set:
+                - name: x-grpc-release
+                  value: canary
+              remove:
+                - x-strip-me
+      - equal:
+          path: spec.rules[0].filters[2]
+          value:
+            type: RequestMirror
+            requestMirror:
+              backendRef:
+                group: ""
+                kind: Service
+                name: inventory-shadow
+                namespace: shadow
+                port: 9090
+              fraction:
+                numerator: 1
+                denominator: 10
+      - equal:
+          path: spec.rules[0].filters[3]
+          value:
+            type: ExtensionRef
+            extensionRef:
+              group: example.net
+              kind: GrpcFilter
+              name: authz
+      - equal:
+          path: spec.rules[0].backendRefs[0]
+          value:
+            group: ""
+            kind: Service
+            name: inventory-svc
+            namespace: apps
+            port: 9090
+            weight: 90
+            filters:
+              - type: RequestHeaderModifier
+                requestHeaderModifier:
+                  add:
+                    - name: x-backend
+                      value: inventory
+      - equal:
+          path: spec.rules[0].backendRefs[1]
+          value:
+            group: ""
+            kind: Service
+            name: inventory-canary
+            port: 9090
+            weight: 10
+      - equal:
+          path: spec.rules[0].sessionPersistence
+          value:
+            sessionName: grpc-session
+            absoluteTimeout: 1h
+            idleTimeout: 5m
+            type: Header
+      - equal:
+          path: spec.useDefaultGateways
+          value: All
+      - equal:
+          path: status.parents[0]
+          value:
+            parentRef:
+              group: gateway.networking.k8s.io
+              kind: Gateway
+              name: edge-gateway
+              namespace: edge-ns
+              sectionName: https
+              port: 443
+            controllerName: example.net/gateway-controller
+            conditions:
+              - type: Accepted
+                status: "True"
+                observedGeneration: 1
+                lastTransitionTime: "2026-03-13T10:15:00Z"
+                reason: Accepted
+                message: Route attached
+              - type: ResolvedRefs
+                status: "True"
+                observedGeneration: 1
+                lastTransitionTime: "2026-03-13T10:15:00Z"
+                reason: ResolvedRefs
+                message: Route references resolved

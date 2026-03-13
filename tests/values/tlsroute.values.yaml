@@ -1,0 +1,61 @@
+commonLabels:
+  platform: gateway-api
+commonAnnotations:
+  team: edge
+
+tlsRoutes:
+  - name: passthrough-tls
+    namespace: apps
+    labels:
+      component: tls-route
+    annotations:
+      note: passthrough
+    spec:
+      parentRefs:
+        - group: gateway.networking.k8s.io
+          kind: Gateway
+          name: edge-gateway
+          namespace: edge-ns
+          sectionName: tls
+          port: 443
+      hostnames:
+        - foo.example.com
+        - bar.example.com
+      rules:
+        - name: tls-backends
+          backendRefs:
+            - group: ""
+              kind: Service
+              name: foo-svc
+              namespace: backend
+              port: 443
+              weight: 80
+            - group: ""
+              kind: Service
+              name: bar-svc
+              port: 8443
+              weight: 20
+      useDefaultGateways: All
+    status:
+      parents:
+        - parentRef:
+            group: gateway.networking.k8s.io
+            kind: Gateway
+            name: edge-gateway
+            namespace: edge-ns
+            sectionName: tls
+            port: 443
+          controllerName: example.net/gateway-controller
+          conditions:
+            - type: Accepted
+              status: "True"
+              observedGeneration: 1
+              lastTransitionTime: "2026-03-13T10:30:00Z"
+              reason: Accepted
+              message: TLSRoute attached
+            - type: ResolvedRefs
+              status: "True"
+              observedGeneration: 1
+              lastTransitionTime: "2026-03-13T10:30:00Z"
+              reason: ResolvedRefs
+              message: Backend references resolved

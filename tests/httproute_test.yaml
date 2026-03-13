@@ -1,0 +1,236 @@
+suite: httproute template
+templates:
+  - templates/httproute.yaml
+release:
+  name: unit-test
+  namespace: unit-namespace
+
+tests:
+  - it: renders no HTTPRoute documents by default
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: renders the HTTPRoute document from the fixture
+    values:
+      - tests/values/httproute.values.yaml
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: HTTPRoute
+      - equal:
+          path: apiVersion
+          value: gateway.networking.k8s.io/v1
+      - equal:
+          path: metadata.name
+          value: api-http
+      - equal:
+          path: metadata.namespace
+          value: apps
+      - equal:
+          path: metadata.labels.platform
+          value: gateway-api
+      - equal:
+          path: metadata.labels.component
+          value: http-route
+      - equal:
+          path: metadata.annotations.note
+          value: http
+      - equal:
+          path: spec.parentRefs[0]
+          value:
+            group: gateway.networking.k8s.io
+            kind: Gateway
+            name: edge-gateway
+            namespace: edge-ns
+            sectionName: https
+            port: 443
+      - equal:
+          path: spec.hostnames[0]
+          value: api.example.com
+      - equal:
+          path: spec.hostnames[1]
+          value: "*.example.com"
+      - equal:
+          path: spec.rules[0].name
+          value: api-v1
+      - equal:
+          path: spec.rules[0].matches[0]
+          value:
+            path:
+              type: PathPrefix
+              value: /api
+            headers:
+              - type: Exact
+                name: x-env
+                value: prod
+            queryParams:
+              - type: Exact
+                name: version
+                value: v1
+            method: GET
+      - equal:
+          path: spec.rules[0].filters[0]
+          value:
+            type: RequestHeaderModifier
+            requestHeaderModifier:
+              add:
+                - name: x-added
+                  value: request
+              set:
+                - name: x-set
+                  value: stable
+              remove:
+                - x-remove
+      - equal:
+          path: spec.rules[0].filters[1]
+          value:
+            type: ResponseHeaderModifier
+            responseHeaderModifier:
+              add:
+                - name: x-response-added
+                  value: response
+              set:
+                - name: x-response-set
+                  value: stable
+              remove:
+                - x-response-remove
+      - equal:
+          path: spec.rules[0].filters[2]
+          value:
+            type: RequestMirror
+            requestMirror:
+              backendRef:
+                group: ""
+                kind: Service
+                name: api-shadow
+                namespace: shadow
+                port: 8080
+              percent: 15
+      - equal:
+          path: spec.rules[0].filters[3]
+          value:
+            type: ExtensionRef
+            extensionRef:
+              group: example.net
+              kind: HttpFilter
+              name: authz
+      - equal:
+          path: spec.rules[0].filters[4]
+          value:
+            type: CORS
+            cors:
+              allowOrigins:
+                - https://app.example.com
+                - https://*.example.net
+              allowMethods:
+                - GET
+                - POST
+              allowHeaders:
+                - Authorization
+                - X-Trace-Id
+              exposeHeaders:
+                - X-Response-Time
+              maxAge: 24h
+              allowCredentials: true
+      - equal:
+          path: spec.rules[0].backendRefs[0]
+          value:
+            group: ""
+            kind: Service
+            name: api-svc
+            namespace: backend
+            port: 8080
+            weight: 80
+            filters:
+              - type: RequestHeaderModifier
+                requestHeaderModifier:
+                  add:
+                    - name: x-backend
+                      value: api
+      - equal:
+          path: spec.rules[0].backendRefs[1]
+          value:
+            group: ""
+            kind: Service
+            name: api-canary
+            port: 8080
+            weight: 20
+      - equal:
+          path: spec.rules[0].timeouts
+          value:
+            request: 30s
+            backendRequest: 10s
+      - equal:
+          path: spec.rules[0].retry
+          value:
+            codes:
+              - 500
+              - 502
+            attempts: 3
+            backoff: 100ms
+      - equal:
+          path: spec.rules[0].sessionPersistence
+          value:
+            sessionName: http-session
+            absoluteTimeout: 1h
+            idleTimeout: 10m
+            type: Cookie
+            cookieConfig:
+              lifetimeType: Permanent
+      - equal:
+          path: spec.rules[1].filters[0]
+          value:
+            type: RequestRedirect
+            requestRedirect:
+              scheme: https
+              hostname: login.example.com
+              path:
+                type: ReplaceFullPath
+                replaceFullPath: /signin
+              port: 8443
+              statusCode: 302
+      - equal:
+          path: spec.rules[2].filters[0]
+          value:
+            type: URLRewrite
+            urlRewrite:
+              hostname: internal.example.com
+              path:
+                type: ReplacePrefixMatch
+                replacePrefixMatch: /internal
+      - equal:
+          path: spec.rules[2].backendRefs[0]
+          value:
+            group: ""
+            kind: Service
+            name: internal-svc
+            port: 8080
+      - equal:
+          path: spec.useDefaultGateways
+          value: All
+      - equal:
+          path: status.parents[0]
+          value:
+            parentRef:
+              group: gateway.networking.k8s.io
+              kind: Gateway
+              name: edge-gateway
+              namespace: edge-ns
+              sectionName: https
+              port: 443
+            controllerName: example.net/gateway-controller
+            conditions:
+              - type: Accepted
+                status: "True"
+                observedGeneration: 1
+                lastTransitionTime: "2026-03-13T10:20:00Z"
+                reason: Accepted
+                message: Route attached
+              - type: ResolvedRefs
+                status: "True"
+                observedGeneration: 1
+                lastTransitionTime: "2026-03-13T10:20:00Z"
+                reason: ResolvedRefs
+                message: Route references resolved
