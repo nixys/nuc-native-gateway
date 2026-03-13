@@ -1,6 +1,5 @@
 stages:
   - validate
-
   - lint
   - unit-tests
   - compatibility_tests
