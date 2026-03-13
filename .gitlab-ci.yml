@@ -46,8 +46,6 @@ compatibility_tests:
     - sh tests/backward_compatibility_test.sh
 
 render_manifests:
-  image:
-    name: golang:1.24
   stage: render
   script:
     - helm dependency build "$CHART_DIR"
@@ -65,8 +63,6 @@ render_manifests:
       - .rendered/
 
 kubeconform_validate:
-  image:
-    name: golang:1.24
   stage: validate
   needs:
     - job: render_manifests
