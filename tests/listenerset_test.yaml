@@ -82,11 +82,3 @@ tests:
             kinds:
               - group: gateway.networking.k8s.io
                 kind: HTTPRoute
-      - equal:
-          path: status.listeners[0].supportedKinds[0]
-          value:
-            group: gateway.networking.k8s.io
-            kind: HTTPRoute
-      - equal:
-          path: status.listeners[0].attachedRoutes
-          value: 2

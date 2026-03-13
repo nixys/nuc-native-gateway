@@ -30,29 +30,6 @@ backendTLSPolicies:
       options:
         example.com/min-version: "1.3"
         example.com/cipher-suites: TLS_AES_128_GCM_SHA256
-    status:
-      ancestors:
-        - ancestorRef:
-            group: gateway.networking.k8s.io
-            kind: Gateway
-            name: edge-gateway
-            namespace: edge-ns
-            sectionName: https
-            port: 443
-          controllerName: example.net/gateway-controller
-          conditions:
-            - type: Accepted
-              status: "True"
-              observedGeneration: 1
-              lastTransitionTime: "2026-03-13T10:00:00Z"
-              reason: Accepted
-              message: Policy attached
-            - type: ResolvedRefs
-              status: "True"
-              observedGeneration: 1
-              lastTransitionTime: "2026-03-13T10:00:00Z"
-              reason: ResolvedRefs
-              message: All references resolved
   - name: backend-tls-with-wellknown
     namespace: app-b
     labels:

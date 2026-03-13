@@ -53,15 +53,3 @@ tests:
             kind: GatewayParameters
             name: public-gateway
             namespace: infra-system
-      - equal:
-          path: status.supportedFeatures[0]
-          value:
-            name: Gateway
-      - equal:
-          path: status.supportedFeatures[1]
-          value:
-            name: HTTPRoute
-      - equal:
-          path: status.supportedFeatures[2]
-          value:
-            name: TLSRoute

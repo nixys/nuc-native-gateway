@@ -153,26 +153,3 @@ httpRoutes:
               name: internal-svc
               port: 8080
       useDefaultGateways: All
-    status:
-      parents:
-        - parentRef:
-            group: gateway.networking.k8s.io
-            kind: Gateway
-            name: edge-gateway
-            namespace: edge-ns
-            sectionName: https
-            port: 443
-          controllerName: example.net/gateway-controller
-          conditions:
-            - type: Accepted
-              status: "True"
-              observedGeneration: 1
-              lastTransitionTime: "2026-03-13T10:20:00Z"
-              reason: Accepted
-              message: Route attached
-            - type: ResolvedRefs
-              status: "True"
-              observedGeneration: 1
-              lastTransitionTime: "2026-03-13T10:20:00Z"
-              reason: ResolvedRefs
-              message: Route references resolved

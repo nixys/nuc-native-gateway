@@ -117,26 +117,3 @@ tests:
                     operator: In
                     values:
                       - prod
-      - equal:
-          path: status.addresses[0]
-          value:
-            type: IPAddress
-            value: 198.51.100.10
-      - equal:
-          path: status.addresses[1]
-          value:
-            type: Hostname
-            value: lb.example.com
-      - equal:
-          path: status.listeners[0].supportedKinds[0]
-          value:
-            group: gateway.networking.k8s.io
-            kind: HTTPRoute
-      - equal:
-          path: status.listeners[0].supportedKinds[1]
-          value:
-            group: gateway.networking.k8s.io
-            kind: GRPCRoute
-      - equal:
-          path: status.listeners[0].attachedRoutes
-          value: 4

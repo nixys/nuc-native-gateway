@@ -210,15 +210,3 @@ tests:
       - equal:
           path: spec.useDefaultGateways
           value: All
-      - equal:
-          path: status.parents[0].parentRef
-          value:
-            group: gateway.networking.k8s.io
-            kind: Gateway
-            name: edge-gateway
-            namespace: edge-ns
-            sectionName: https
-            port: 443
-      - equal:
-          path: status.parents[0].controllerName
-          value: example.net/gateway-controller

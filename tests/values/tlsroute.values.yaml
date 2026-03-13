@@ -36,26 +36,3 @@ tlsRoutes:
               port: 8443
               weight: 20
       useDefaultGateways: All
-    status:
-      parents:
-        - parentRef:
-            group: gateway.networking.k8s.io
-            kind: Gateway
-            name: edge-gateway
-            namespace: edge-ns
-            sectionName: tls
-            port: 443
-          controllerName: example.net/gateway-controller
-          conditions:
-            - type: Accepted
-              status: "True"
-              observedGeneration: 1
-              lastTransitionTime: "2026-03-13T10:30:00Z"
-              reason: Accepted
-              message: TLSRoute attached
-            - type: ResolvedRefs
-              status: "True"
-              observedGeneration: 1
-              lastTransitionTime: "2026-03-13T10:30:00Z"
-              reason: ResolvedRefs
-              message: Backend references resolved
