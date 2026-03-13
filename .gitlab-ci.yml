@@ -69,6 +69,21 @@ render_manifests:
       > "$RENDER_DIR/all.yaml"
     - test -s "$RENDER_DIR/all.yaml"
     - echo "✅ Сгенерировано $(grep -c '^kind:' .rendered/all.yaml) ресурсов"
+    - echo "🔍 Полное содержимое $RENDER_DIR/all.yaml:"
+    - cat "$RENDER_DIR/all.yaml"
+    
+    # === ПОИСК kind: С УЧЁТОМ ОТСТУПОВ ===
+    - echo "🔎 Поиск 'kind:' с любыми отступами:"
+    - grep -c 'kind:' "$RENDER_DIR/all.yaml" || echo "Не найдено"
+    - grep 'kind:' "$RENDER_DIR/all.yaml" | head -10
+    
+    # === ПОИСК apiVersion ===
+    - echo "🔎 Поиск 'apiVersion:':"
+    - grep -c 'apiVersion:' "$RENDER_DIR/all.yaml" || echo "Не найдено"
+    
+    # === ПРОВЕРКА НА ПУСТЫЕ ДОКУМЕНТЫ ===
+    - echo "🔎 Проверка на пустые YAML-документы:"
+    - grep -E '^---$|^[[:space:]]*$' "$RENDER_DIR/all.yaml" | head -10
   artifacts:
     when: always
     paths:
