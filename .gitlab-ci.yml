@@ -57,6 +57,7 @@ render_manifests:
       --namespace "$RELEASE_NAMESPACE"
       > "$RENDER_DIR/all.yaml"
     - test -s "$RENDER_DIR/all.yaml"
+    - echo "✅ Сгенерировано $(grep -c '^kind:' .rendered/all.yaml) ресурсов"
   artifacts:
     when: always
     paths:
