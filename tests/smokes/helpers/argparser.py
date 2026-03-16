@@ -46,7 +46,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--kube-version",
-        default=os.environ.get("KUBE_VERSION", "1.30.0"),
+        default=os.environ.get("KUBE_VERSION", "1.35.2"),
         help="Kubernetes version passed to kubeconform.",
     )
     parser.add_argument(

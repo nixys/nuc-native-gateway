@@ -10,7 +10,7 @@ variables:
   CHART_DIR: "."
   RELEASE_NAME: "nuc-release"
   RELEASE_NAMESPACE: "default"
-  KUBE_VERSION: "1.30.0"
+  KUBE_VERSION: "1.35.2"
   KUBECONFORM_VERSION: "v0.6.7"
   RENDER_DIR: ".rendered"
   KUBECONFORM_CRD_SCHEMA_LOCATION: "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
