@@ -82,7 +82,7 @@ Use [values.yaml.example](values.yaml.example) as a starting point and remove th
 The repository uses three test layers:
 
 - `tests/units/` for `helm-unittest` suites and backward compatibility checks
-- `tests/e2e/` for local kind-based `ct install` checks against real Gateway API CRDs
+- `tests/e2e/` for local kind-based Helm install checks against real Gateway API CRDs
 - `tests/smokes/` for render and schema smoke scenarios
 
 Representative local commands:

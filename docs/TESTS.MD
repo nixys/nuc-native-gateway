@@ -72,7 +72,7 @@ Notes:
 
 End-to-end tests live under `tests/e2e/`.
 
-This layer uses a shell runner around `kind` and `chart-testing` to validate that the chart can be installed into a real cluster with Gateway API CRDs present.
+This layer uses a shell runner around `kind` and Helm to validate that the chart can be installed into a real cluster with Gateway API CRDs present.
 
 ## E2E Layout
 
@@ -90,9 +90,9 @@ tests/e2e/
 
 1. Starts a disposable kind cluster from `tests/e2e/kind.yaml`.
 2. Installs Gateway API experimental CRDs from a pinned upstream release.
-3. Runs `ct install` against the chart root with `tests/e2e/values/install.values.yaml`.
+3. Runs `helm upgrade --install` against the chart root with `tests/e2e/values/install.values.yaml`.
 4. Verifies the installed `GatewayClass`, `Gateway`, `HTTPRoute`, `GRPCRoute`, `TLSRoute`, `BackendTLSPolicy`, and `ReferenceGrant` objects with `kubectl get`.
-5. Cleans up the chart-testing container and the kind cluster on exit.
+5. Cleans up the kind cluster on exit.
 
 ## Running E2E Tests
 
@@ -102,7 +102,7 @@ Run the default end-to-end flow:
 bash tests/e2e/test-e2e.sh
 ```
 
-Pass additional arguments through to `ct install`:
+Pass additional arguments through to `helm upgrade --install`:
 
 ```bash
 bash tests/e2e/test-e2e.sh --debug
@@ -124,16 +124,18 @@ make test-e2e E2E_ARGS="--debug"
 
 ## E2E Prerequisites
 
+- `kubectl`
+- `helm`
+- outbound access to fetch the Gateway API CRD bundle
+
+For local disposable-cluster runs only:
+
 - `docker`
 - `kind`
-- `kubectl`
-- outbound access to pull `quay.io/helmpack/chart-testing`
-- outbound access to fetch the Gateway API CRD bundle
 
 Optional environment overrides:
 
 - `CLUSTER_NAME`
-- `CT_VERSION`
 - `K8S_VERSION`
 - `GATEWAY_API_VERSION`
 

@@ -38,11 +38,11 @@ test-smoke-fast: ## Run smoke scenarios except kubeconform-dependent validation
 		$(SMOKE_ARGS)
 
 .PHONY: test-e2e
-test-e2e: ## Run local kind-based end-to-end tests; append E2E_ARGS='--debug'
+test-e2e: ## Run local kind-based end-to-end tests
 	bash tests/e2e/test-e2e.sh $(E2E_ARGS)
 
 .PHONY: test-e2e-debug
-test-e2e-debug: ## Run local e2e tests with chart-testing debug output
+test-e2e-debug: ## Run e2e tests with Helm debug output
 	bash tests/e2e/test-e2e.sh --debug $(E2E_ARGS)
 
 .PHONY: test-e2e-help
