@@ -1,0 +1,143 @@
+suite: example resources
+templates:
+  - templates/backendtlspolicy.yaml
+  - templates/gatewayclass.yaml
+  - templates/gateway.yaml
+  - templates/grpcroute.yaml
+  - templates/httproute.yaml
+  - templates/listenerset.yaml
+  - templates/referencegrant.yaml
+  - templates/tlsroute.yaml
+release:
+  name: unit-test
+  namespace: unit-namespace
+
+tests:
+  - it: renders the full example set
+    values:
+      - ../../values.yaml.example
+    asserts:
+      - hasDocuments:
+          count: 9
+
+  - it: renders the GatewayClass example
+    values:
+      - ../../values.yaml.example
+    documentSelector:
+      path: metadata.name
+      value: public-gateway-class
+    asserts:
+      - isKind:
+          of: GatewayClass
+      - notExists:
+          path: metadata.namespace
+      - equal:
+          path: spec.controllerName
+          value: example.net/gateway-controller
+
+  - it: renders the Gateway example
+    values:
+      - ../../values.yaml.example
+    documentSelector:
+      path: metadata.name
+      value: edge-gateway
+    asserts:
+      - isKind:
+          of: Gateway
+      - equal:
+          path: metadata.namespace
+          value: edge-ns
+      - equal:
+          path: spec.listeners[0].protocol
+          value: HTTPS
+
+  - it: renders the BackendTLSPolicy CA bundle example
+    values:
+      - ../../values.yaml.example
+    documentSelector:
+      path: metadata.name
+      value: backend-tls-with-ca
+    asserts:
+      - isKind:
+          of: BackendTLSPolicy
+      - equal:
+          path: spec.validation.caCertificateRefs[0].name
+          value: payments-ca
+
+  - it: renders the BackendTLSPolicy well-known CA example
+    values:
+      - ../../values.yaml.example
+    documentSelector:
+      path: metadata.name
+      value: backend-tls-with-wellknown
+    asserts:
+      - isKind:
+          of: BackendTLSPolicy
+      - equal:
+          path: spec.validation.wellKnownCACertificates
+          value: System
+
+  - it: renders the GRPCRoute example
+    values:
+      - ../../values.yaml.example
+    documentSelector:
+      path: metadata.name
+      value: inventory-grpc
+    asserts:
+      - isKind:
+          of: GRPCRoute
+      - equal:
+          path: spec.rules[0].sessionPersistence.type
+          value: Header
+
+  - it: renders the HTTPRoute example
+    values:
+      - ../../values.yaml.example
+    documentSelector:
+      path: metadata.name
+      value: api-http
+    asserts:
+      - isKind:
+          of: HTTPRoute
+      - equal:
+          path: spec.rules[0].filters[4].cors.maxAge
+          value: 86400
+
+  - it: renders the ListenerSet example
+    values:
+      - ../../values.yaml.example
+    documentSelector:
+      path: metadata.name
+      value: shared-listeners
+    asserts:
+      - isKind:
+          of: ListenerSet
+      - equal:
+          path: spec.parentRef.name
+          value: edge-gateway
+
+  - it: renders the ReferenceGrant example
+    values:
+      - ../../values.yaml.example
+    documentSelector:
+      path: metadata.name
+      value: allow-backend-refs
+    asserts:
+      - isKind:
+          of: ReferenceGrant
+      - equal:
+          path: spec.to[1].kind
+          value: Secret
+
+  - it: renders the TLSRoute example
+    values:
+      - ../../values.yaml.example
+    documentSelector:
+      path: metadata.name
+      value: passthrough-tls
+    asserts:
+      - isKind:
+          of: TLSRoute
+      - equal:
+          path: spec.rules[0].backendRefs[1].port
+          value: 8443

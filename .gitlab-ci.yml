@@ -13,8 +13,6 @@ variables:
   RENDER_DIR: ".rendered"
   KUBECONFORM_CRD_SCHEMA_LOCATION: "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
   KUBECONFORM_SKIP_KINDS: "ListenerSet,ReferenceGrant,TLSRoute"
-  POLICY_DIR: "policy"
-  CONFTEST_REGO_VERSION: "v1"
   GOBIN: "$CI_PROJECT_DIR/.bin"
   GOMODCACHE: "$CI_PROJECT_DIR/.cache/go/pkg/mod"
   GOCACHE: "$CI_PROJECT_DIR/.cache/go-build"
@@ -35,8 +33,8 @@ lint:
 unit_tests:
   stage: unit-tests
   script:
-    - helm plugin install https://github.com/helm-unittest/helm-unittest.git --verify=false
-    - helm unittest .
+    - helm plugin install https://github.com/helm-unittest/helm-unittest.git
+    - helm unittest -f 'tests/units/*_test.yaml' .
 
 compatibility_tests:
   stage: compatibility_tests
@@ -46,7 +44,7 @@ compatibility_tests:
     - apk add --no-cache git
     - git fetch --tags --force
   script:
-    - sh tests/backward_compatibility_test.sh
+    - sh tests/units/backward_compatibility_test.sh
 
 render_manifests:
   stage: render
