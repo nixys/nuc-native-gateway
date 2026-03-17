@@ -12,7 +12,7 @@ Render the example configuration:
 helm template nuc-native-gateway . -f values.yaml.example
 ```
 
-Install the chartsss:
+Install the chart:
 
 ```bash
 helm install nuc-native-gateway . \
