@@ -7,14 +7,12 @@ set -o pipefail
 ROOT_DIR="$(git rev-parse --show-toplevel)"
 SCRIPT_DIR="${ROOT_DIR}/tests/e2e"
 CLUSTER_CREATED=false
-CLUSTER_NAME="${CLUSTER_NAME:-$(mktemp -u "nuc-native-gateway-e2e-XXXXXXXXXX" | tr "[:upper:]" "[:lower:]")}"
-# kindest/node images are published on kind's cadence, not for every Kubernetes patch release.
+CLUSTER_NAME="${CLUSTER_NAME:-$(mktemp -u "nuc-kserve-e2e-XXXXXXXXXX" | tr "[:upper:]" "[:lower:]")}"
 K8S_VERSION="${K8S_VERSION:-v1.35.0}"
-GATEWAY_API_VERSION="${GATEWAY_API_VERSION:-v1.4.1}"
-GATEWAY_API_CRD_URL="https://github.com/kubernetes-sigs/gateway-api/releases/download/${GATEWAY_API_VERSION}/experimental-install.yaml"
-E2E_NAMESPACE="nuc-native-gateway-e2e"
-RELEASE_NAME="nuc-native-gateway-e2e"
-VALUES_FILE="tests/e2e/values/install.values.yaml"
+E2E_NAMESPACE="nuc-kserve-e2e"
+WORKLOAD_NAMESPACE="ml-platform"
+RELEASE_NAME="nuc-kserve-e2e"
+VALUES_FILE="values.yaml.example"
 
 RED='\033[0;31m'
 YELLOW='\033[0;33m'
@@ -27,13 +25,12 @@ log_warn() { echo -e "${YELLOW}Warning:${RESET} $1" >&2; }
 show_help() {
   echo "Usage: $(basename "$0") [helm upgrade/install options]"
   echo ""
-  echo "Create a kind cluster, install Gateway API experimental CRDs, and run Helm install/upgrade against the root chart."
+  echo "Create a kind cluster, install vendored KServe CRDs, and run Helm install/upgrade against the root chart."
   echo "Unknown arguments are passed through to 'helm upgrade --install'."
   echo ""
   echo "Environment overrides:"
-  echo "  CLUSTER_NAME          Kind cluster name"
-  echo "  K8S_VERSION           kindest/node tag"
-  echo "  GATEWAY_API_VERSION   Gateway API release used for CRD bootstrap"
+  echo "  CLUSTER_NAME   Kind cluster name"
+  echo "  K8S_VERSION    kindest/node tag"
   echo ""
 }
 
@@ -68,11 +65,10 @@ cleanup() {
 }
 
 dump_cluster_state() {
-  log_warn "Dumping Gateway API resources from ${CLUSTER_NAME}"
-  kubectl get gatewayclasses.gateway.networking.k8s.io || true
-  kubectl get \
-    backendtlspolicies.gateway.networking.k8s.io,gateways.gateway.networking.k8s.io,grpcroutes.gateway.networking.k8s.io,httproutes.gateway.networking.k8s.io,referencegrants.gateway.networking.k8s.io,tlsroutes.gateway.networking.k8s.io \
-    -A || true
+  log_warn "Dumping KServe resources from ${CLUSTER_NAME}"
+  kubectl get crd | grep 'serving.kserve.io' || true
+  kubectl get inferenceservices,inferencegraphs,servingruntimes,trainedmodels -A || true
+  kubectl get clusterservingruntimes,clusterstoragecontainers,localmodelcaches,localmodelnodegroups,localmodelnodes || true
 }
 
 create_kind_cluster() {
@@ -93,27 +89,31 @@ create_kind_cluster() {
   echo
 }
 
-install_gateway_api_crds() {
-  log_info "Installing Gateway API experimental CRDs from ${GATEWAY_API_VERSION}"
-  kubectl apply --server-side -f "${GATEWAY_API_CRD_URL}"
+install_kserve_crds() {
+  log_info "Installing vendored KServe CRDs"
+  kubectl apply --server-side -f "${SCRIPT_DIR}/crds"
 
   for crd in \
-    backendtlspolicies.gateway.networking.k8s.io \
-    gatewayclasses.gateway.networking.k8s.io \
-    gateways.gateway.networking.k8s.io \
-    grpcroutes.gateway.networking.k8s.io \
-    httproutes.gateway.networking.k8s.io \
-    referencegrants.gateway.networking.k8s.io \
-    tlsroutes.gateway.networking.k8s.io; do
+    clusterservingruntimes.serving.kserve.io \
+    clusterstoragecontainers.serving.kserve.io \
+    inferencegraphs.serving.kserve.io \
+    inferenceservices.serving.kserve.io \
+    localmodelcaches.serving.kserve.io \
+    localmodelnodegroups.serving.kserve.io \
+    localmodelnodes.serving.kserve.io \
+    servingruntimes.serving.kserve.io \
+    trainedmodels.serving.kserve.io; do
     kubectl wait --for=condition=Established --timeout=120s "crd/${crd}"
   done
 
   echo
 }
 
-ensure_namespace() {
-  log_info "Ensuring namespace ${E2E_NAMESPACE} exists"
-  kubectl get namespace "${E2E_NAMESPACE}" >/dev/null 2>&1 || kubectl create namespace "${E2E_NAMESPACE}"
+ensure_namespaces() {
+  for ns in "${E2E_NAMESPACE}" "${WORKLOAD_NAMESPACE}"; do
+    log_info "Ensuring namespace ${ns} exists"
+    kubectl get namespace "${ns}" >/dev/null 2>&1 || kubectl create namespace "${ns}"
+  done
   echo
 }
 
@@ -143,14 +143,16 @@ install_chart() {
 }
 
 verify_release_resources() {
-  log_info "Verifying installed Gateway API resources"
-  kubectl get gatewayclass e2e-gateway-class
-  kubectl -n "${E2E_NAMESPACE}" get gateway e2e-gateway
-  kubectl -n "${E2E_NAMESPACE}" get httproute e2e-http
-  kubectl -n "${E2E_NAMESPACE}" get grpcroute e2e-grpc
-  kubectl -n "${E2E_NAMESPACE}" get tlsroute e2e-tls
-  kubectl -n "${E2E_NAMESPACE}" get backendtlspolicy e2e-backend-tls
-  kubectl -n "${E2E_NAMESPACE}" get referencegrant e2e-referencegrant
+  log_info "Verifying installed KServe resources"
+  kubectl get clusterservingruntime sklearn-cluster-runtime
+  kubectl get clusterstoragecontainer default-storage
+  kubectl -n "${WORKLOAD_NAMESPACE}" get inferencegraph model-chain
+  kubectl -n "${WORKLOAD_NAMESPACE}" get inferenceservice sklearn-iris
+  kubectl get localmodelcache bert-cache
+  kubectl get localmodelnodegroup ssd-cache-group
+  kubectl get localmodelnode worker-cache-01
+  kubectl -n "${WORKLOAD_NAMESPACE}" get servingruntime sklearn-runtime
+  kubectl -n "${WORKLOAD_NAMESPACE}" get trainedmodel sklearn-iris-v1
   echo
 }
 
@@ -172,8 +174,8 @@ main() {
   trap cleanup EXIT
 
   create_kind_cluster
-  install_gateway_api_crds
-  ensure_namespace
+  install_kserve_crds
+  ensure_namespaces
   install_chart "$@"
   verify_release_resources
 

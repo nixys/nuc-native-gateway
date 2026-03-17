@@ -1,0 +1,4 @@
+{{- range $index, $item := .Values.inferenceServices }}
+{{- if gt $index 0 }}---{{ end }}
+{{ include "nuc-kserve.renderResource" (dict "root" $ "item" $item "resourceKey" (printf "inferenceServices[%d]" $index) "defaultApiVersion" $.Values.apiVersions.inferenceService "kind" "InferenceService" "namespaced" true) }}
+{{- end }}

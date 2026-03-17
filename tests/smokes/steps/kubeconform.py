@@ -63,4 +63,3 @@ def validate(
         )
 
     return payload
-

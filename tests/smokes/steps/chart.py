@@ -4,8 +4,6 @@ from pathlib import Path
 import shutil
 import tempfile
 
-from tests.smokes.steps import system
-
 
 FILES_TO_COPY = [
     "Chart.yaml",
@@ -16,6 +14,7 @@ FILES_TO_COPY = [
 
 DIRS_TO_COPY = [
     "templates",
+    "files",
 ]
 
 
@@ -27,7 +26,7 @@ def stage_chart(source_dir: Path, requested_workdir: str | None) -> tuple[Path, 
             shutil.rmtree(workdir)
         workdir.mkdir(parents=True, exist_ok=True)
     else:
-        workdir = Path(tempfile.mkdtemp(prefix="nuc-native-gateway-smokes-"))
+        workdir = Path(tempfile.mkdtemp(prefix="nuc-kserve-smokes-"))
 
     chart_dir = workdir / "chart"
     chart_dir.mkdir(parents=True, exist_ok=True)
@@ -48,4 +47,3 @@ def stage_chart(source_dir: Path, requested_workdir: str | None) -> tuple[Path, 
 
 def cleanup(workdir: Path) -> None:
     shutil.rmtree(workdir, ignore_errors=True)
-

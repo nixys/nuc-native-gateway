@@ -34,11 +34,11 @@ test-compat: ## Run backward compatibility checks against previous tags
 	sh tests/units/backward_compatibility_test.sh
 
 .PHONY: test-smoke
-test-smoke: ## Run all smoke scenarios; append SMOKE_ARGS='--scenario example-render'
+test-smoke: ## Run all smoke scenarios
 	python3 tests/smokes/run/smoke.py $(SMOKE_ARGS)
 
 .PHONY: test-smoke-fast
-test-smoke-fast: ## Run smoke scenarios except kubeconform-dependent validation
+test-smoke-fast: ## Run smoke scenarios without kubeconform
 	python3 tests/smokes/run/smoke.py \
 		--scenario default-empty \
 		--scenario schema-invalid-missing-name \

@@ -60,7 +60,7 @@ def check_schema_invalid_missing_name(context: SmokeContext) -> None:
         )
 
     combined_output = f"{result.stdout}\n{result.stderr}"
-    if "name" not in combined_output:
+    if "missing property 'name'" not in combined_output:
         raise system.TestFailure(
             "helm lint failed for invalid values, but the error does not mention the missing name field"
         )
@@ -85,37 +85,39 @@ def check_rendering_contract(context: SmokeContext) -> None:
     documents = render.load_documents(output_path)
     render.assert_doc_count(documents, 2)
 
-    gateway = render.select_document(documents, kind="Gateway", name="merged-gateway")
-    render.assert_path(gateway, "apiVersion", "example.net/v1alpha1")
-    render.assert_path(gateway, "metadata.namespace", context.namespace)
-    render.assert_path(
-        gateway,
-        "metadata.labels[app.kubernetes.io/name]",
-        "gateway-platform",
+    inference_service = render.select_document(
+        documents, kind="InferenceService", name="merged-inferenceservice"
     )
-    render.assert_path(gateway, "metadata.labels.platform", "gateway-api")
-    render.assert_path(gateway, "metadata.labels.component", "gateway")
-    render.assert_path(gateway, "metadata.labels.tier", "edge")
-    render.assert_path(gateway, "metadata.annotations.team", "platform")
-    render.assert_path(gateway, "metadata.annotations.note", "external")
-    render.assert_path(gateway, "spec.gatewayClassName", "public-gateway-class")
+    render.assert_path(inference_service, "apiVersion", "serving.kserve.io/v1beta1")
+    render.assert_path(inference_service, "metadata.namespace", context.namespace)
+    render.assert_path(
+        inference_service,
+        "metadata.labels[app.kubernetes.io/name]",
+        "kserve-platform",
+    )
+    render.assert_path(inference_service, "metadata.labels.platform", "kserve")
+    render.assert_path(inference_service, "metadata.labels.component", "inference-service")
+    render.assert_path(inference_service, "metadata.labels.tier", "online")
+    render.assert_path(inference_service, "metadata.annotations.team", "platform")
+    render.assert_path(inference_service, "metadata.annotations.note", "canary")
+    render.assert_path(
+        inference_service, "spec.predictor.sklearn.storageUri", "s3://models/sklearn"
+    )
 
-    gateway_class = render.select_document(
-        documents, kind="GatewayClass", name="public-gateway-class"
+    cluster_runtime = render.select_document(
+        documents, kind="ClusterServingRuntime", name="cluster-runtime"
     )
-    render.assert_path(gateway_class, "apiVersion", "gateway.networking.k8s.io/v1beta1")
-    render.assert_path_missing(gateway_class, "metadata.namespace")
+    render.assert_path(cluster_runtime, "apiVersion", "example.net/v1alpha1")
+    render.assert_path_missing(cluster_runtime, "metadata.namespace")
     render.assert_path(
-        gateway_class,
+        cluster_runtime,
         "metadata.labels[app.kubernetes.io/name]",
-        "gateway-platform",
+        "kserve-platform",
     )
-    render.assert_path(gateway_class, "metadata.labels.component", "gateway-class")
-    render.assert_path(gateway_class, "metadata.annotations.team", "platform")
-    render.assert_path(gateway_class, "metadata.annotations.note", "public")
-    render.assert_path(
-        gateway_class, "spec.controllerName", "example.net/gateway-controller"
-    )
+    render.assert_path(cluster_runtime, "metadata.labels.component", "runtime")
+    render.assert_path(cluster_runtime, "metadata.annotations.team", "platform")
+    render.assert_path(cluster_runtime, "metadata.annotations.note", "autosync")
+    render.assert_path(cluster_runtime, "spec.supportedModelFormats[0].name", "sklearn")
 
 
 def check_example_render(context: SmokeContext) -> None:
@@ -139,38 +141,37 @@ def check_example_render(context: SmokeContext) -> None:
     render.assert_kinds(
         documents,
         {
-            "BackendTLSPolicy",
-            "GatewayClass",
-            "Gateway",
-            "GRPCRoute",
-            "HTTPRoute",
-            "ListenerSet",
-            "ReferenceGrant",
-            "TLSRoute",
+            "ClusterServingRuntime",
+            "ClusterStorageContainer",
+            "InferenceGraph",
+            "InferenceService",
+            "LocalModelCache",
+            "LocalModelNodeGroup",
+            "LocalModelNode",
+            "ServingRuntime",
+            "TrainedModel",
         },
     )
 
-    gateway_class = render.select_document(
-        documents, kind="GatewayClass", name="public-gateway-class"
+    inference_service = render.select_document(
+        documents, kind="InferenceService", name="sklearn-iris"
     )
-    render.assert_path_missing(gateway_class, "metadata.namespace")
-
-    gateway = render.select_document(documents, kind="Gateway", name="edge-gateway")
-    render.assert_path(gateway, "metadata.namespace", "edge-ns")
-    render.assert_path(gateway, "spec.listeners[0].protocol", "HTTPS")
-
-    backend_tls = render.select_document(
-        documents, kind="BackendTLSPolicy", name="backend-tls-with-wellknown"
-    )
+    render.assert_path(inference_service, "metadata.namespace", "ml-platform")
     render.assert_path(
-        backend_tls, "spec.validation.wellKnownCACertificates", "System"
+        inference_service,
+        "spec.predictor.sklearn.storageUri",
+        "gs://kfserving-examples/models/sklearn/1.0/model",
     )
 
-    http_route = render.select_document(documents, kind="HTTPRoute", name="api-http")
-    render.assert_path(http_route, "spec.rules[0].filters[4].cors.maxAge", 86400)
+    cluster_storage = render.select_document(
+        documents, kind="ClusterStorageContainer", name="default-storage"
+    )
+    render.assert_path(cluster_storage, "spec.workloadType", "initContainer")
 
-    tls_route = render.select_document(documents, kind="TLSRoute", name="passthrough-tls")
-    render.assert_path(tls_route, "spec.rules[0].backendRefs[1].port", 8443)
+    localmodel_group = render.select_document(
+        documents, kind="LocalModelNodeGroup", name="ssd-cache-group"
+    )
+    render.assert_path(localmodel_group, "spec.storageLimit", "100Gi")
 
 
 def check_example_kubeconform(context: SmokeContext) -> None:

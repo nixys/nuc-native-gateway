@@ -1,13 +1,14 @@
 suite: example resources
 templates:
-  - templates/backendtlspolicy.yaml
-  - templates/gatewayclass.yaml
-  - templates/gateway.yaml
-  - templates/grpcroute.yaml
-  - templates/httproute.yaml
-  - templates/listenerset.yaml
-  - templates/referencegrant.yaml
-  - templates/tlsroute.yaml
+  - templates/clusterservingruntime.yaml
+  - templates/clusterstoragecontainer.yaml
+  - templates/inferencegraph.yaml
+  - templates/inferenceservice.yaml
+  - templates/localmodelcache.yaml
+  - templates/localmodelnodegroup.yaml
+  - templates/localmodelnode.yaml
+  - templates/servingruntime.yaml
+  - templates/trainedmodel.yaml
 release:
   name: unit-test
   namespace: unit-namespace
@@ -18,224 +19,92 @@ tests:
       - ../../values.yaml.example
     asserts:
       - hasDocuments:
-          count: 2
-        template: templates/backendtlspolicy.yaml
+          count: 1
+        template: templates/clusterservingruntime.yaml
       - hasDocuments:
           count: 1
-        template: templates/gatewayclass.yaml
+        template: templates/clusterstoragecontainer.yaml
       - hasDocuments:
           count: 1
-        template: templates/gateway.yaml
+        template: templates/inferencegraph.yaml
       - hasDocuments:
           count: 1
-        template: templates/grpcroute.yaml
+        template: templates/inferenceservice.yaml
       - hasDocuments:
           count: 1
-        template: templates/httproute.yaml
+        template: templates/localmodelcache.yaml
       - hasDocuments:
           count: 1
-        template: templates/listenerset.yaml
+        template: templates/localmodelnodegroup.yaml
       - hasDocuments:
           count: 1
-        template: templates/referencegrant.yaml
+        template: templates/localmodelnode.yaml
       - hasDocuments:
           count: 1
-        template: templates/tlsroute.yaml
+        template: templates/servingruntime.yaml
+      - hasDocuments:
+          count: 1
+        template: templates/trainedmodel.yaml
 
   - it: renders the expected example manifests
     values:
       - ../../values.yaml.example
     asserts:
       - containsDocument:
-          kind: BackendTLSPolicy
-          apiVersion: gateway.networking.k8s.io/v1
-          name: backend-tls-with-ca
-          namespace: app-a
+          kind: ClusterServingRuntime
+          apiVersion: serving.kserve.io/v1alpha1
+          name: sklearn-cluster-runtime
           any: true
-        template: templates/backendtlspolicy.yaml
+        template: templates/clusterservingruntime.yaml
       - containsDocument:
-          kind: BackendTLSPolicy
-          apiVersion: gateway.networking.k8s.io/v1
-          name: backend-tls-with-wellknown
-          namespace: app-b
+          kind: ClusterStorageContainer
+          apiVersion: serving.kserve.io/v1alpha1
+          name: default-storage
           any: true
-        template: templates/backendtlspolicy.yaml
+        template: templates/clusterstoragecontainer.yaml
       - containsDocument:
-          kind: GatewayClass
-          apiVersion: gateway.networking.k8s.io/v1
-          name: public-gateway-class
+          kind: InferenceGraph
+          apiVersion: serving.kserve.io/v1alpha1
+          name: model-chain
+          namespace: ml-platform
           any: true
-        template: templates/gatewayclass.yaml
+        template: templates/inferencegraph.yaml
       - containsDocument:
-          kind: Gateway
-          apiVersion: gateway.networking.k8s.io/v1
-          name: edge-gateway
-          namespace: edge-ns
+          kind: InferenceService
+          apiVersion: serving.kserve.io/v1beta1
+          name: sklearn-iris
+          namespace: ml-platform
           any: true
-        template: templates/gateway.yaml
+        template: templates/inferenceservice.yaml
       - containsDocument:
-          kind: GRPCRoute
-          apiVersion: gateway.networking.k8s.io/v1
-          name: inventory-grpc
-          namespace: apps
+          kind: LocalModelCache
+          apiVersion: serving.kserve.io/v1alpha1
+          name: bert-cache
           any: true
-        template: templates/grpcroute.yaml
+        template: templates/localmodelcache.yaml
       - containsDocument:
-          kind: HTTPRoute
-          apiVersion: gateway.networking.k8s.io/v1
-          name: api-http
-          namespace: apps
+          kind: LocalModelNodeGroup
+          apiVersion: serving.kserve.io/v1alpha1
+          name: ssd-cache-group
           any: true
-        template: templates/httproute.yaml
+        template: templates/localmodelnodegroup.yaml
       - containsDocument:
-          kind: ListenerSet
-          apiVersion: gateway.networking.k8s.io/v1
-          name: shared-listeners
-          namespace: apps
+          kind: LocalModelNode
+          apiVersion: serving.kserve.io/v1alpha1
+          name: worker-cache-01
           any: true
-        template: templates/listenerset.yaml
+        template: templates/localmodelnode.yaml
       - containsDocument:
-          kind: ReferenceGrant
-          apiVersion: gateway.networking.k8s.io/v1
-          name: allow-backend-refs
-          namespace: backend
+          kind: ServingRuntime
+          apiVersion: serving.kserve.io/v1alpha1
+          name: sklearn-runtime
+          namespace: ml-platform
           any: true
-        template: templates/referencegrant.yaml
+        template: templates/servingruntime.yaml
       - containsDocument:
-          kind: TLSRoute
-          apiVersion: gateway.networking.k8s.io/v1
-          name: passthrough-tls
-          namespace: apps
+          kind: TrainedModel
+          apiVersion: serving.kserve.io/v1alpha1
+          name: sklearn-iris-v1
+          namespace: ml-platform
           any: true
-        template: templates/tlsroute.yaml
-
-  - it: renders the GatewayClass example
-    values:
-      - ../../values.yaml.example
-    template: templates/gatewayclass.yaml
-    documentSelector:
-      path: metadata.name
-      value: public-gateway-class
-    asserts:
-      - isKind:
-          of: GatewayClass
-      - notExists:
-          path: metadata.namespace
-      - equal:
-          path: spec.controllerName
-          value: example.net/gateway-controller
-
-  - it: renders the Gateway example
-    values:
-      - ../../values.yaml.example
-    template: templates/gateway.yaml
-    documentSelector:
-      path: metadata.name
-      value: edge-gateway
-    asserts:
-      - isKind:
-          of: Gateway
-      - equal:
-          path: metadata.namespace
-          value: edge-ns
-      - equal:
-          path: spec.listeners[0].protocol
-          value: HTTPS
-
-  - it: renders the BackendTLSPolicy CA bundle example
-    values:
-      - ../../values.yaml.example
-    template: templates/backendtlspolicy.yaml
-    documentSelector:
-      path: metadata.name
-      value: backend-tls-with-ca
-    asserts:
-      - isKind:
-          of: BackendTLSPolicy
-      - equal:
-          path: spec.validation.caCertificateRefs[0].name
-          value: payments-ca
-
-  - it: renders the BackendTLSPolicy well-known CA example
-    values:
-      - ../../values.yaml.example
-    template: templates/backendtlspolicy.yaml
-    documentSelector:
-      path: metadata.name
-      value: backend-tls-with-wellknown
-    asserts:
-      - isKind:
-          of: BackendTLSPolicy
-      - equal:
-          path: spec.validation.wellKnownCACertificates
-          value: System
-
-  - it: renders the GRPCRoute example
-    values:
-      - ../../values.yaml.example
-    template: templates/grpcroute.yaml
-    documentSelector:
-      path: metadata.name
-      value: inventory-grpc
-    asserts:
-      - isKind:
-          of: GRPCRoute
-      - equal:
-          path: spec.rules[0].sessionPersistence.type
-          value: Header
-
-  - it: renders the HTTPRoute example
-    values:
-      - ../../values.yaml.example
-    template: templates/httproute.yaml
-    documentSelector:
-      path: metadata.name
-      value: api-http
-    asserts:
-      - isKind:
-          of: HTTPRoute
-      - equal:
-          path: spec.rules[0].filters[4].cors.maxAge
-          value: 86400
-
-  - it: renders the ListenerSet example
-    values:
-      - ../../values.yaml.example
-    template: templates/listenerset.yaml
-    documentSelector:
-      path: metadata.name
-      value: shared-listeners
-    asserts:
-      - isKind:
-          of: ListenerSet
-      - equal:
-          path: spec.parentRef.name
-          value: edge-gateway
-
-  - it: renders the ReferenceGrant example
-    values:
-      - ../../values.yaml.example
-    template: templates/referencegrant.yaml
-    documentSelector:
-      path: metadata.name
-      value: allow-backend-refs
-    asserts:
-      - isKind:
-          of: ReferenceGrant
-      - equal:
-          path: spec.to[1].kind
-          value: Secret
-
-  - it: renders the TLSRoute example
-    values:
-      - ../../values.yaml.example
-    template: templates/tlsroute.yaml
-    documentSelector:
-      path: metadata.name
-      value: passthrough-tls
-    asserts:
-      - isKind:
-          of: TLSRoute
-      - equal:
-          path: spec.rules[0].backendRefs[1].port
-          value: 8443
+        template: templates/trainedmodel.yaml

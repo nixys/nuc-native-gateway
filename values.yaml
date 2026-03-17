@@ -6,25 +6,25 @@ commonLabels: {}
 # -- Extra annotations applied to every rendered resource.
 commonAnnotations: {}
 
-# The defaults below are aligned with the current Gateway API standard channel.
-# Override them if your cluster uses another bundle version.
 apiVersions:
-  # -- Default apiVersion for BackendTLSPolicy resources.
-  backendTLSPolicy: gateway.networking.k8s.io/v1
-  # -- Default apiVersion for GatewayClass resources.
-  gatewayClass: gateway.networking.k8s.io/v1
-  # -- Default apiVersion for Gateway resources.
-  gateway: gateway.networking.k8s.io/v1
-  # -- Default apiVersion for GRPCRoute resources.
-  grpcRoute: gateway.networking.k8s.io/v1
-  # -- Default apiVersion for HTTPRoute resources.
-  httpRoute: gateway.networking.k8s.io/v1
-  # -- Default apiVersion for ListenerSet resources.
-  listenerSet: gateway.networking.k8s.io/v1
-  # -- Default apiVersion for ReferenceGrant resources.
-  referenceGrant: gateway.networking.k8s.io/v1
-  # -- Default apiVersion for TLSRoute resources.
-  tlsRoute: gateway.networking.k8s.io/v1
+  # -- Default apiVersion for ClusterServingRuntime resources.
+  clusterServingRuntime: serving.kserve.io/v1alpha1
+  # -- Default apiVersion for ClusterStorageContainer resources.
+  clusterStorageContainer: serving.kserve.io/v1alpha1
+  # -- Default apiVersion for InferenceGraph resources.
+  inferenceGraph: serving.kserve.io/v1alpha1
+  # -- Default apiVersion for InferenceService resources.
+  inferenceService: serving.kserve.io/v1beta1
+  # -- Default apiVersion for LocalModelCache resources.
+  localModelCache: serving.kserve.io/v1alpha1
+  # -- Default apiVersion for LocalModelNodeGroup resources.
+  localModelNodeGroup: serving.kserve.io/v1alpha1
+  # -- Default apiVersion for LocalModelNode resources.
+  localModelNode: serving.kserve.io/v1alpha1
+  # -- Default apiVersion for ServingRuntime resources.
+  servingRuntime: serving.kserve.io/v1alpha1
+  # -- Default apiVersion for TrainedModel resources.
+  trainedModel: serving.kserve.io/v1alpha1
 
 # Each list item supports:
 # - name: required
@@ -35,26 +35,29 @@ apiVersions:
 # - spec: arbitrary resource spec
 # - status: optional raw status block for fixtures and synthetic manifests
 
-# -- BackendTLSPolicy resources to render.
-backendTLSPolicies: []
+# -- ClusterServingRuntime resources to render.
+clusterServingRuntimes: []
 
-# -- GatewayClass resources to render.
-gatewayClasses: []
+# -- ClusterStorageContainer resources to render.
+clusterStorageContainers: []
 
-# -- Gateway resources to render.
-gateways: []
+# -- InferenceGraph resources to render.
+inferenceGraphs: []
 
-# -- GRPCRoute resources to render.
-grpcRoutes: []
+# -- InferenceService resources to render.
+inferenceServices: []
 
-# -- HTTPRoute resources to render.
-httpRoutes: []
+# -- LocalModelCache resources to render.
+localModelCaches: []
 
-# -- ListenerSet resources to render.
-listenerSets: []
+# -- LocalModelNodeGroup resources to render.
+localModelNodeGroups: []
 
-# -- ReferenceGrant resources to render.
-referenceGrants: []
+# -- LocalModelNode resources to render.
+localModelNodes: []
 
-# -- TLSRoute resources to render.
-tlsRoutes: []
+# -- ServingRuntime resources to render.
+servingRuntimes: []
+
+# -- TrainedModel resources to render.
+trainedModels: []
