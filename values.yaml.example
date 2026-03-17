@@ -1,156 +1,492 @@
-# Example values for all supported KServe resources in this chart.
+# Example values for all supported Gateway API resources in this chart.
 # Render with:
-#   helm template nuc-kserve . -f values.yaml.example
+#   helm template nuc-native-gateway . -f values.yaml.example
 
+# Override the generated chart name if needed.
 nameOverride: ""
 
+# Labels and annotations merged into every rendered resource.
 commonLabels:
-  platform: kserve
+  platform: gateway-api
 commonAnnotations:
-  team: ml-platform
+  team: edge
 
+# Optional API version overrides. The chart defaults already match these values.
 apiVersions:
-  clusterServingRuntime: serving.kserve.io/v1alpha1
-  clusterStorageContainer: serving.kserve.io/v1alpha1
-  inferenceGraph: serving.kserve.io/v1alpha1
-  inferenceService: serving.kserve.io/v1beta1
-  localModelCache: serving.kserve.io/v1alpha1
-  localModelNodeGroup: serving.kserve.io/v1alpha1
-  localModelNode: serving.kserve.io/v1alpha1
-  servingRuntime: serving.kserve.io/v1alpha1
-  trainedModel: serving.kserve.io/v1alpha1
+  backendTLSPolicy: gateway.networking.k8s.io/v1
+  gatewayClass: gateway.networking.k8s.io/v1
+  gateway: gateway.networking.k8s.io/v1
+  grpcRoute: gateway.networking.k8s.io/v1
+  httpRoute: gateway.networking.k8s.io/v1
+  listenerSet: gateway.networking.k8s.io/v1
+  referenceGrant: gateway.networking.k8s.io/v1
+  tlsRoute: gateway.networking.k8s.io/v1
 
-clusterServingRuntimes:
-  - name: sklearn-cluster-runtime
+# Backend TLS policies attached to Services.
+backendTLSPolicies:
+  - name: backend-tls-with-ca
+    namespace: app-a
     labels:
-      component: runtime
+      component: backend-tls
     annotations:
-      serving.kserve.io/server-type: sklearnserver
+      note: ca-bundle
     spec:
-      supportedModelFormats:
-        - name: sklearn
-          version: "1"
-          autoSelect: true
-          priority: 1
-      protocolVersions:
-        - v1
-        - v2
-      containers:
-        - name: kserve-container
-          image: kserve/custom-model:latest
-          args:
-            - --model_name={{.Name}}
-            - --model_dir=/mnt/models
-
-clusterStorageContainers:
-  - name: default-storage
+      targetRefs:
+        - group: ""
+          kind: Service
+          name: payments
+          sectionName: https
+      validation:
+        hostname: payments.internal.example.com
+        caCertificateRefs:
+          - group: ""
+            kind: ConfigMap
+            name: payments-ca
+        subjectAltNames:
+          - type: Hostname
+            hostname: payments.internal.example.com
+          - type: URI
+            uri: spiffe://cluster.local/ns/app-a/sa/payments
+      options:
+        example.com/min-version: "1.3"
+        example.com/cipher-suites: TLS_AES_128_GCM_SHA256
+  - name: backend-tls-with-wellknown
+    namespace: app-b
     labels:
-      component: storage
-    spec:
-      container:
-        name: storage-initializer
-        image: kserve/storage-initializer:latest
-        imagePullPolicy: IfNotPresent
-      supportedUriFormats:
-        - prefix: gs://
-        - prefix: s3://
-        - regex: "https?://(.+)/(.+)"
-      workloadType: initContainer
-
-inferenceGraphs:
-  - name: model-chain
-    namespace: ml-platform
-    labels:
-      component: graph
-    spec:
-      nodes:
-        root:
-          routerType: Sequence
-          steps:
-            - serviceName: sklearn-iris
-            - serviceName: xgboost-iris
-              data: $request
-
-inferenceServices:
-  - name: sklearn-iris
-    namespace: ml-platform
-    labels:
-      component: inference-service
+      component: backend-tls
     annotations:
-      note: example
+      note: system-ca
     spec:
-      predictor:
-        sklearn:
-          storageUri: gs://kfserving-examples/models/sklearn/1.0/model
+      targetRefs:
+        - group: ""
+          kind: Service
+          name: ledger
+      validation:
+        hostname: ledger.internal.example.com
+        wellKnownCACertificates: System
+      options:
+        example.com/min-version: "1.2"
 
-localModelCaches:
-  - name: bert-cache
+# Cluster-scoped GatewayClass resources.
+gatewayClasses:
+  - name: public-gateway-class
     labels:
-      component: localmodel-cache
+      component: gateway-class
+    annotations:
+      note: public
     spec:
-      modelSize: 10Gi
-      nodeGroups:
-        - ssd-cache-group
-      sourceModelUri: s3://models/bert-base
+      controllerName: example.net/gateway-controller
+      description: Public edge gateway class
+      parametersRef:
+        group: example.net
+        kind: GatewayParameters
+        name: public-gateway
+        namespace: infra-system
 
-localModelNodeGroups:
-  - name: ssd-cache-group
+# Gateways that expose listeners to routes.
+gateways:
+  - name: edge-gateway
+    namespace: edge-ns
     labels:
-      component: localmodel-node-group
+      component: gateway
+    annotations:
+      note: external
     spec:
-      persistentVolumeClaimSpec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 20Gi
-        storageClassName: standard
-      persistentVolumeSpec:
-        accessModes:
-          - ReadWriteOnce
-        capacity:
-          storage: 20Gi
-        hostPath:
-          path: /var/lib/kserve/localmodel
-        persistentVolumeReclaimPolicy: Delete
-      storageLimit: 100Gi
+      gatewayClassName: public-gateway-class
+      addresses:
+        - type: IPAddress
+          value: 192.0.2.10
+        - type: Hostname
+          value: edge.example.com
+      listeners:
+        - name: https
+          hostname: api.example.com
+          port: 443
+          protocol: HTTPS
+          tls:
+            mode: Terminate
+            certificateRefs:
+              - group: ""
+                kind: Secret
+                name: edge-cert
+            options:
+              example.com/min-version: "1.3"
+          allowedRoutes:
+            namespaces:
+              from: Selector
+              selector:
+                matchLabels:
+                  expose: "true"
+                matchExpressions:
+                  - key: team
+                    operator: In
+                    values:
+                      - core
+            kinds:
+              - group: gateway.networking.k8s.io
+                kind: HTTPRoute
+              - group: gateway.networking.k8s.io
+                kind: GRPCRoute
+      infrastructure:
+        labels:
+          infra: public
+        annotations:
+          infra.example.com/class: internet
+        parametersRef:
+          group: example.net
+          kind: GatewayInfra
+          name: edge-config
+      allowedListeners:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              shared-gateway: "true"
+            matchExpressions:
+              - key: env
+                operator: In
+                values:
+                  - prod
 
-localModelNodes:
-  - name: worker-cache-01
+# GRPCRoute examples with filters, weighted backends, and session persistence.
+grpcRoutes:
+  - name: inventory-grpc
+    namespace: apps
     labels:
-      component: localmodel-node
+      component: grpc-route
+    annotations:
+      note: grpc
     spec:
-      localModels:
-        - modelName: bert-base
-          nodeGroup: ssd-cache-group
-          sourceModelUri: s3://models/bert-base
+      parentRefs:
+        - group: gateway.networking.k8s.io
+          kind: Gateway
+          name: edge-gateway
+          namespace: edge-ns
+          sectionName: https
+          port: 443
+      hostnames:
+        - grpc.example.com
+      rules:
+        - name: inventory
+          matches:
+            - method:
+                type: Exact
+                service: inventory.v1.InventoryService
+                method: GetItem
+              headers:
+                - type: Exact
+                  name: x-version
+                  value: v1
+          filters:
+            - type: RequestHeaderModifier
+              requestHeaderModifier:
+                add:
+                  - name: x-grpc-added
+                    value: "true"
+                set:
+                  - name: x-grpc-set
+                    value: stable
+                remove:
+                  - x-remove-me
+            - type: ResponseHeaderModifier
+              responseHeaderModifier:
+                add:
+                  - name: x-grpc-response
+                    value: present
+                set:
+                  - name: x-grpc-release
+                    value: canary
+                remove:
+                  - x-strip-me
+            - type: RequestMirror
+              requestMirror:
+                backendRef:
+                  group: ""
+                  kind: Service
+                  name: inventory-shadow
+                  namespace: shadow
+                  port: 9090
+                fraction:
+                  numerator: 1
+                  denominator: 10
+            - type: ExtensionRef
+              extensionRef:
+                group: example.net
+                kind: GrpcFilter
+                name: authz
+          backendRefs:
+            - group: ""
+              kind: Service
+              name: inventory-svc
+              namespace: apps
+              port: 9090
+              weight: 90
+              filters:
+                - type: RequestHeaderModifier
+                  requestHeaderModifier:
+                    add:
+                      - name: x-backend
+                        value: inventory
+            - group: ""
+              kind: Service
+              name: inventory-canary
+              port: 9090
+              weight: 10
+          sessionPersistence:
+            sessionName: grpc-session
+            absoluteTimeout: 1h
+            idleTimeout: 5m
+            type: Header
+      useDefaultGateways: All
 
-servingRuntimes:
-  - name: sklearn-runtime
-    namespace: ml-platform
+# HTTPRoute examples with matches, redirects, rewrites, CORS, retries, and sessions.
+httpRoutes:
+  - name: api-http
+    namespace: apps
     labels:
-      component: serving-runtime
+      component: http-route
+    annotations:
+      note: http
     spec:
-      supportedModelFormats:
-        - name: sklearn
-          version: "1"
-          autoSelect: true
-          priority: 1
-      containers:
-        - name: kserve-container
-          image: kserve/custom-model:latest
-          args:
-            - --model_name={{.Name}}
-            - --model_dir=/mnt/models
+      parentRefs:
+        - group: gateway.networking.k8s.io
+          kind: Gateway
+          name: edge-gateway
+          namespace: edge-ns
+          sectionName: https
+          port: 443
+      hostnames:
+        - api.example.com
+        - "*.example.com"
+      rules:
+        - name: api-v1
+          matches:
+            - path:
+                type: PathPrefix
+                value: /api
+              headers:
+                - type: Exact
+                  name: x-env
+                  value: prod
+              queryParams:
+                - type: Exact
+                  name: version
+                  value: v1
+              method: GET
+          filters:
+            - type: RequestHeaderModifier
+              requestHeaderModifier:
+                add:
+                  - name: x-added
+                    value: request
+                set:
+                  - name: x-set
+                    value: stable
+                remove:
+                  - x-remove
+            - type: ResponseHeaderModifier
+              responseHeaderModifier:
+                add:
+                  - name: x-response-added
+                    value: response
+                set:
+                  - name: x-response-set
+                    value: stable
+                remove:
+                  - x-response-remove
+            - type: RequestMirror
+              requestMirror:
+                backendRef:
+                  group: ""
+                  kind: Service
+                  name: api-shadow
+                  namespace: shadow
+                  port: 8080
+                percent: 15
+            - type: ExtensionRef
+              extensionRef:
+                group: example.net
+                kind: HttpFilter
+                name: authz
+            - type: CORS
+              cors:
+                allowOrigins:
+                  - https://app.example.com
+                  - https://*.example.net
+                allowMethods:
+                  - GET
+                  - POST
+                allowHeaders:
+                  - Authorization
+                  - X-Trace-Id
+                exposeHeaders:
+                  - X-Response-Time
+                maxAge: 86400
+                allowCredentials: true
+          backendRefs:
+            - group: ""
+              kind: Service
+              name: api-svc
+              namespace: backend
+              port: 8080
+              weight: 80
+              filters:
+                - type: RequestHeaderModifier
+                  requestHeaderModifier:
+                    add:
+                      - name: x-backend
+                        value: api
+            - group: ""
+              kind: Service
+              name: api-canary
+              port: 8080
+              weight: 20
+          timeouts:
+            request: 30s
+            backendRequest: 10s
+          retry:
+            codes:
+              - 500
+              - 502
+            attempts: 3
+            backoff: 100ms
+          sessionPersistence:
+            sessionName: http-session
+            absoluteTimeout: 1h
+            idleTimeout: 10m
+            type: Cookie
+            cookieConfig:
+              lifetimeType: Permanent
+        - name: redirect-login
+          matches:
+            - path:
+                type: Exact
+                value: /login
+          filters:
+            - type: RequestRedirect
+              requestRedirect:
+                scheme: https
+                hostname: login.example.com
+                path:
+                  type: ReplaceFullPath
+                  replaceFullPath: /signin
+                port: 8443
+                statusCode: 302
+        - name: rewrite-v2
+          matches:
+            - path:
+                type: PathPrefix
+                value: /v2
+          filters:
+            - type: URLRewrite
+              urlRewrite:
+                hostname: internal.example.com
+                path:
+                  type: ReplacePrefixMatch
+                  replacePrefixMatch: /internal
+          backendRefs:
+            - group: ""
+              kind: Service
+              name: internal-svc
+              port: 8080
+      useDefaultGateways: All
 
-trainedModels:
-  - name: sklearn-iris-v1
-    namespace: ml-platform
+# ListenerSet example for shared listeners.
+listenerSets:
+  - name: shared-listeners
+    namespace: apps
     labels:
-      component: trained-model
+      component: listener-set
+    annotations:
+      note: shared
     spec:
-      inferenceService: sklearn-iris
-      model:
-        framework: sklearn
-        memory: 2Gi
-        storageUri: gs://kfserving-examples/models/sklearn/1.0/model
+      parentRef:
+        group: gateway.networking.k8s.io
+        kind: Gateway
+        name: edge-gateway
+        namespace: edge-ns
+      listeners:
+        - name: shared-https
+          hostname: shared.example.com
+          port: 8443
+          protocol: HTTPS
+          tls:
+            mode: Terminate
+            certificateRefs:
+              - group: ""
+                kind: Secret
+                name: shared-cert
+            options:
+              example.com/min-version: "1.3"
+          allowedRoutes:
+            namespaces:
+              from: Selector
+              selector:
+                matchLabels:
+                  tenant: shared
+                matchExpressions:
+                  - key: env
+                    operator: In
+                    values:
+                      - prod
+            kinds:
+              - group: gateway.networking.k8s.io
+                kind: HTTPRoute
+
+# Reference grants for cross-namespace access.
+referenceGrants:
+  - name: allow-backend-refs
+    namespace: backend
+    labels:
+      component: reference-grant
+    annotations:
+      note: cross-namespace
+    spec:
+      from:
+        - group: gateway.networking.k8s.io
+          kind: HTTPRoute
+          namespace: apps
+        - group: gateway.networking.k8s.io
+          kind: GRPCRoute
+          namespace: apps
+      to:
+        - group: ""
+          kind: Service
+          name: api-svc
+        - group: ""
+          kind: Secret
+
+# TLSRoute example for SNI-based passthrough traffic.
+tlsRoutes:
+  - name: passthrough-tls
+    namespace: apps
+    labels:
+      component: tls-route
+    annotations:
+      note: passthrough
+    spec:
+      parentRefs:
+        - group: gateway.networking.k8s.io
+          kind: Gateway
+          name: edge-gateway
+          namespace: edge-ns
+          sectionName: tls
+          port: 443
+      hostnames:
+        - foo.example.com
+        - bar.example.com
+      rules:
+        - name: tls-backends
+          backendRefs:
+            - group: ""
+              kind: Service
+              name: foo-svc
+              namespace: backend
+              port: 443
+              weight: 80
+            - group: ""
+              kind: Service
+              name: bar-svc
+              port: 8443
+              weight: 20
+      useDefaultGateways: All

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema#",
-  "title": "nuc-kserve values",
-  "description": "Schema for nuc-kserve Helm chart values.",
+  "title": "nuc-native-gateway values",
+  "description": "Schema for nuc-native-gateway Helm chart values.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -19,55 +19,66 @@
     },
     "apiVersions": {
       "type": "object",
-      "description": "Default API version overrides per supported KServe kind.",
+      "description": "Default API version overrides per supported Gateway API kind.",
       "additionalProperties": false,
       "properties": {
-        "clusterServingRuntime": { "$ref": "#/definitions/nonEmptyString" },
-        "clusterStorageContainer": { "$ref": "#/definitions/nonEmptyString" },
-        "inferenceGraph": { "$ref": "#/definitions/nonEmptyString" },
-        "inferenceService": { "$ref": "#/definitions/nonEmptyString" },
-        "localModelCache": { "$ref": "#/definitions/nonEmptyString" },
-        "localModelNodeGroup": { "$ref": "#/definitions/nonEmptyString" },
-        "localModelNode": { "$ref": "#/definitions/nonEmptyString" },
-        "servingRuntime": { "$ref": "#/definitions/nonEmptyString" },
-        "trainedModel": { "$ref": "#/definitions/nonEmptyString" }
+        "backendTLSPolicy": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "gatewayClass": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "gateway": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "grpcRoute": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "httpRoute": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "listenerSet": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "referenceGrant": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "tlsRoute": {
+          "$ref": "#/definitions/nonEmptyString"
+        }
       }
     },
-    "clusterServingRuntimes": {
+    "backendTLSPolicies": {
       "$ref": "#/definitions/resourceList",
-      "description": "List of ClusterServingRuntime resources."
+      "description": "List of BackendTLSPolicy resources."
     },
-    "clusterStorageContainers": {
+    "gatewayClasses": {
       "$ref": "#/definitions/resourceList",
-      "description": "List of ClusterStorageContainer resources."
+      "description": "List of GatewayClass resources."
     },
-    "inferenceGraphs": {
+    "gateways": {
       "$ref": "#/definitions/resourceList",
-      "description": "List of InferenceGraph resources."
+      "description": "List of Gateway resources."
     },
-    "inferenceServices": {
+    "grpcRoutes": {
       "$ref": "#/definitions/resourceList",
-      "description": "List of InferenceService resources."
+      "description": "List of GRPCRoute resources."
     },
-    "localModelCaches": {
+    "httpRoutes": {
       "$ref": "#/definitions/resourceList",
-      "description": "List of LocalModelCache resources."
+      "description": "List of HTTPRoute resources."
     },
-    "localModelNodeGroups": {
+    "listenerSets": {
       "$ref": "#/definitions/resourceList",
-      "description": "List of LocalModelNodeGroup resources."
+      "description": "List of ListenerSet resources."
     },
-    "localModelNodes": {
+    "referenceGrants": {
       "$ref": "#/definitions/resourceList",
-      "description": "List of LocalModelNode resources."
+      "description": "List of ReferenceGrant resources."
     },
-    "servingRuntimes": {
+    "tlsRoutes": {
       "$ref": "#/definitions/resourceList",
-      "description": "List of ServingRuntime resources."
-    },
-    "trainedModels": {
-      "$ref": "#/definitions/resourceList",
-      "description": "List of TrainedModel resources."
+      "description": "List of TLSRoute resources."
     }
   },
   "definitions": {
@@ -88,13 +99,15 @@
     },
     "freeFormObject": {
       "type": "object",
-      "description": "Arbitrary KServe payload passed through by the chart.",
+      "description": "Arbitrary Gateway API payload passed through by the chart.",
       "additionalProperties": true
     },
     "resourceItem": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name"],
+      "required": [
+        "name"
+      ],
       "properties": {
         "name": {
           "$ref": "#/definitions/nonEmptyString",

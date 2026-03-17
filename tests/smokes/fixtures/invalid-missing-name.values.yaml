@@ -1,7 +1,5 @@
-clusterServingRuntimes:
-  - spec:
-      supportedModelFormats:
-        - name: sklearn
-      containers:
-        - name: runtime
-          image: example/runtime:latest
+gateways:
+  - namespace: edge
+    spec:
+      gatewayClassName: public-gateway-class
+

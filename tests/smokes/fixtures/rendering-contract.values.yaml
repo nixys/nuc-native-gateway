@@ -1,42 +1,35 @@
-nameOverride: kserve-platform
+nameOverride: gateway-platform
 
 commonLabels:
-  platform: kserve
+  platform: gateway-api
+  component: shared
+  tier: common
+
 commonAnnotations:
   team: platform
+  note: common
 
 apiVersions:
-  clusterServingRuntime: example.net/v1alpha1
-  clusterStorageContainer: serving.kserve.io/v1alpha1
-  inferenceGraph: serving.kserve.io/v1alpha1
-  inferenceService: serving.kserve.io/v1beta1
-  localModelCache: serving.kserve.io/v1alpha1
-  localModelNodeGroup: serving.kserve.io/v1alpha1
-  localModelNode: serving.kserve.io/v1alpha1
-  servingRuntime: serving.kserve.io/v1alpha1
-  trainedModel: serving.kserve.io/v1alpha1
+  gatewayClass: gateway.networking.k8s.io/v1beta1
 
-clusterServingRuntimes:
-  - name: cluster-runtime
+gateways:
+  - name: merged-gateway
+    apiVersion: example.net/v1alpha1
     labels:
-      component: runtime
+      component: gateway
+      tier: edge
     annotations:
-      note: autosync
+      note: external
     spec:
-      supportedModelFormats:
-        - name: sklearn
-      containers:
-        - name: runtime
-          image: example/runtime:latest
+      gatewayClassName: public-gateway-class
 
-inferenceServices:
-  - name: merged-inferenceservice
+gatewayClasses:
+  - name: public-gateway-class
+    namespace: should-not-render
     labels:
-      component: inference-service
-      tier: online
+      component: gateway-class
     annotations:
-      note: canary
+      note: public
     spec:
-      predictor:
-        sklearn:
-          storageUri: s3://models/sklearn
+      controllerName: example.net/gateway-controller
+
