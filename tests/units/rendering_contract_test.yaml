@@ -1,20 +1,20 @@
 suite: rendering contract
 templates:
-  - templates/inferenceservice.yaml
-  - templates/clusterservingruntime.yaml
+  - templates/gateway.yaml
+  - templates/gatewayclass.yaml
 release:
   name: unit-test
   namespace: unit-namespace
 
 tests:
-  - it: renders no InferenceService documents by default
-    template: templates/inferenceservice.yaml
+  - it: renders no Gateway documents by default
+    template: templates/gateway.yaml
     asserts:
       - hasDocuments:
           count: 0
 
-  - it: renders no ClusterServingRuntime documents by default
-    template: templates/clusterservingruntime.yaml
+  - it: renders no GatewayClass documents by default
+    template: templates/gatewayclass.yaml
     asserts:
       - hasDocuments:
           count: 0
@@ -22,68 +22,68 @@ tests:
   - it: applies helper defaults and overrides for namespaced resources
     values:
       - values/rendering_contract.values.yaml
-    template: templates/inferenceservice.yaml
+    template: templates/gateway.yaml
     documentSelector:
       path: metadata.name
-      value: merged-inferenceservice
+      value: merged-gateway
     asserts:
       - isKind:
-          of: InferenceService
+          of: Gateway
       - equal:
           path: apiVersion
-          value: serving.kserve.io/v1beta1
+          value: example.net/v1alpha1
       - equal:
           path: metadata.namespace
           value: unit-namespace
       - equal:
           path: metadata.labels["app.kubernetes.io/name"]
-          value: kserve-platform
+          value: gateway-platform
       - equal:
           path: metadata.labels.platform
-          value: kserve
+          value: gateway-api
       - equal:
           path: metadata.labels.component
-          value: inference-service
+          value: gateway
       - equal:
           path: metadata.labels.tier
-          value: online
+          value: edge
       - equal:
           path: metadata.annotations.team
           value: platform
       - equal:
           path: metadata.annotations.note
-          value: canary
+          value: external
       - equal:
-          path: spec.predictor.sklearn.storageUri
-          value: s3://models/sklearn
+          path: spec.gatewayClassName
+          value: public-gateway-class
 
   - it: renders cluster-scoped resources without namespace and with configured apiVersion
     values:
       - values/rendering_contract.values.yaml
-    template: templates/clusterservingruntime.yaml
+    template: templates/gatewayclass.yaml
     documentSelector:
       path: metadata.name
-      value: cluster-runtime
+      value: public-gateway-class
     asserts:
       - isKind:
-          of: ClusterServingRuntime
+          of: GatewayClass
       - equal:
           path: apiVersion
-          value: example.net/v1alpha1
+          value: gateway.networking.k8s.io/v1beta1
       - notExists:
           path: metadata.namespace
       - equal:
           path: metadata.labels["app.kubernetes.io/name"]
-          value: kserve-platform
+          value: gateway-platform
       - equal:
           path: metadata.labels.component
-          value: runtime
+          value: gateway-class
       - equal:
           path: metadata.annotations.team
           value: platform
       - equal:
           path: metadata.annotations.note
-          value: autosync
+          value: public
       - equal:
-          path: spec.supportedModelFormats[0].name
-          value: sklearn
+          path: spec.controllerName
+          value: example.net/gateway-controller

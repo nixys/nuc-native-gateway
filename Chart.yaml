@@ -1,6 +1,7 @@
+---
 apiVersion: v2
-name: nuc-kserve
-description: Helm chart for rendering KServe custom resources from declarative values
+name: nuc-native-gateway
+description: Helm chart for Kubernetes Gateway API standard resources
 type: application
 version: 0.1.0
-appVersion: "v0.17.0"
+appVersion: "v1"

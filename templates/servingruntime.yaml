@@ -1,4 +1,0 @@
-{{- range $index, $item := .Values.servingRuntimes }}
-{{- if gt $index 0 }}---{{ end }}
-{{ include "nuc-kserve.renderResource" (dict "root" $ "item" $item "resourceKey" (printf "servingRuntimes[%d]" $index) "defaultApiVersion" $.Values.apiVersions.servingRuntime "kind" "ServingRuntime" "namespaced" true) }}
-{{- end }}

@@ -1,23 +1,23 @@
-{{- define "nuc-kserve.name" -}}
+{{- define "nuc-native-gateway.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "nuc-kserve.chart" -}}
+{{- define "nuc-native-gateway.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "nuc-kserve.labels" -}}
-app.kubernetes.io/name: {{ include "nuc-kserve.name" . }}
+{{- define "nuc-native-gateway.labels" -}}
+app.kubernetes.io/name: {{ include "nuc-native-gateway.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-helm.sh/chart: {{ include "nuc-kserve.chart" . }}
+helm.sh/chart: {{ include "nuc-native-gateway.chart" . }}
 {{- end -}}
 
-{{- define "nuc-kserve.renderResource" -}}
+{{- define "nuc-native-gateway.renderResource" -}}
 {{- $root := .root -}}
 {{- $item := .item -}}
 {{- $resourceKey := .resourceKey -}}
-{{- $defaultLabels := include "nuc-kserve.labels" $root | fromYaml -}}
+{{- $defaultLabels := include "nuc-native-gateway.labels" $root | fromYaml -}}
 {{- $labels := mustMergeOverwrite (dict) $defaultLabels ($root.Values.commonLabels | default dict) ($item.labels | default dict) -}}
 {{- $annotations := mustMergeOverwrite (dict) ($root.Values.commonAnnotations | default dict) ($item.annotations | default dict) -}}
 apiVersion: {{ default .defaultApiVersion $item.apiVersion }}
