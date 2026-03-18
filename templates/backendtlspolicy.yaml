@@ -1,11 +1,7 @@
-{{- range $index, $item := .Values.backendTLSPolicies }}
----
-{{ include "nuc-native-gateway.renderResource" (dict
+{{ include "nuc-native-gateway.renderResources" (dict
   "root" $
-  "item" $item
+  "collection" ($.Values.backendTLSPolicies | default dict)
   "kind" "BackendTLSPolicy"
   "defaultApiVersion" $.Values.apiVersions.backendTLSPolicy
-  "resourceKey" (printf "backendTLSPolicies[%d]" $index)
   "namespaced" true
 ) }}
-{{- end }}

@@ -1,11 +1,7 @@
-{{- range $index, $item := .Values.gateways }}
----
-{{ include "nuc-native-gateway.renderResource" (dict
+{{ include "nuc-native-gateway.renderResources" (dict
   "root" $
-  "item" $item
+  "collection" ($.Values.gateways | default dict)
   "kind" "Gateway"
   "defaultApiVersion" $.Values.apiVersions.gateway
-  "resourceKey" (printf "gateways[%d]" $index)
   "namespaced" true
 ) }}
-{{- end }}

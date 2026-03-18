@@ -26,8 +26,8 @@ apiVersions:
   # -- Default apiVersion for TLSRoute resources.
   tlsRoute: gateway.networking.k8s.io/v1
 
-# Each list item supports:
-# - name: required
+# Each map entry supports:
+# - the top-level map key becomes metadata.name
 # - namespace: optional for namespaced resources, defaults to the release namespace
 # - labels: optional
 # - annotations: optional
@@ -35,12 +35,10 @@ apiVersions:
 # - spec: arbitrary resource spec
 # - status: optional raw status block for fixtures and synthetic manifests
 
-# -- BackendTLSPolicy resources to render.
-# @default -- []
+# -- BackendTLSPolicy resources keyed by resource name.
+# @default -- {}
 backendTLSPolicies:
-  - # -- Resource name.
-    # @default -- required
-    name: __helm_docs_example__
+  __helm_docs_example__:
     # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
     # @default -- release namespace
     namespace: documentation-placeholder
@@ -56,12 +54,10 @@ backendTLSPolicies:
     # -- Optional resource status rendered as-is.
     status: {}
 
-# -- GatewayClass resources to render.
-# @default -- []
+# -- GatewayClass resources keyed by resource name.
+# @default -- {}
 gatewayClasses:
-  - # -- Resource name.
-    # @default -- required
-    name: __helm_docs_example__
+  __helm_docs_example__:
     # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
     # @default -- ""
     namespace: documentation-placeholder
@@ -77,12 +73,10 @@ gatewayClasses:
     # -- Optional resource status rendered as-is.
     status: {}
 
-# -- Gateway resources to render.
-# @default -- []
+# -- Gateway resources keyed by resource name.
+# @default -- {}
 gateways:
-  - # -- Resource name.
-    # @default -- required
-    name: __helm_docs_example__
+  __helm_docs_example__:
     # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
     # @default -- release namespace
     namespace: documentation-placeholder
@@ -98,12 +92,10 @@ gateways:
     # -- Optional resource status rendered as-is.
     status: {}
 
-# -- GRPCRoute resources to render.
-# @default -- []
+# -- GRPCRoute resources keyed by resource name.
+# @default -- {}
 grpcRoutes:
-  - # -- Resource name.
-    # @default -- required
-    name: __helm_docs_example__
+  __helm_docs_example__:
     # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
     # @default -- release namespace
     namespace: documentation-placeholder
@@ -119,12 +111,10 @@ grpcRoutes:
     # -- Optional resource status rendered as-is.
     status: {}
 
-# -- HTTPRoute resources to render.
-# @default -- []
+# -- HTTPRoute resources keyed by resource name.
+# @default -- {}
 httpRoutes:
-  - # -- Resource name.
-    # @default -- required
-    name: __helm_docs_example__
+  __helm_docs_example__:
     # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
     # @default -- release namespace
     namespace: documentation-placeholder
@@ -140,12 +130,10 @@ httpRoutes:
     # -- Optional resource status rendered as-is.
     status: {}
 
-# -- ListenerSet resources to render.
-# @default -- []
+# -- ListenerSet resources keyed by resource name.
+# @default -- {}
 listenerSets:
-  - # -- Resource name.
-    # @default -- required
-    name: __helm_docs_example__
+  __helm_docs_example__:
     # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
     # @default -- release namespace
     namespace: documentation-placeholder
@@ -161,12 +149,10 @@ listenerSets:
     # -- Optional resource status rendered as-is.
     status: {}
 
-# -- ReferenceGrant resources to render.
-# @default -- []
+# -- ReferenceGrant resources keyed by resource name.
+# @default -- {}
 referenceGrants:
-  - # -- Resource name.
-    # @default -- required
-    name: __helm_docs_example__
+  __helm_docs_example__:
     # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
     # @default -- release namespace
     namespace: documentation-placeholder
@@ -182,12 +168,10 @@ referenceGrants:
     # -- Optional resource status rendered as-is.
     status: {}
 
-# -- TLSRoute resources to render.
-# @default -- []
+# -- TLSRoute resources keyed by resource name.
+# @default -- {}
 tlsRoutes:
-  - # -- Resource name.
-    # @default -- required
-    name: __helm_docs_example__
+  __helm_docs_example__:
     # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
     # @default -- release namespace
     namespace: documentation-placeholder

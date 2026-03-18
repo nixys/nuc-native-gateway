@@ -1,11 +1,7 @@
-{{- range $index, $item := .Values.httpRoutes }}
----
-{{ include "nuc-native-gateway.renderResource" (dict
+{{ include "nuc-native-gateway.renderResources" (dict
   "root" $
-  "item" $item
+  "collection" ($.Values.httpRoutes | default dict)
   "kind" "HTTPRoute"
   "defaultApiVersion" $.Values.apiVersions.httpRoute
-  "resourceKey" (printf "httpRoutes[%d]" $index)
   "namespaced" true
 ) }}
-{{- end }}

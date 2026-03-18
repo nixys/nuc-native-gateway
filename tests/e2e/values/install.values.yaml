@@ -14,7 +14,7 @@ apiVersions:
   tlsRoute: gateway.networking.k8s.io/v1alpha2
 
 backendTLSPolicies:
-  - name: e2e-backend-tls
+  e2e-backend-tls:
     spec:
       targetRefs:
         - group: ""
@@ -26,12 +26,12 @@ backendTLSPolicies:
         wellKnownCACertificates: System
 
 gatewayClasses:
-  - name: e2e-gateway-class
+  e2e-gateway-class:
     spec:
       controllerName: example.net/gateway-controller
 
 gateways:
-  - name: e2e-gateway
+  e2e-gateway:
     spec:
       gatewayClassName: e2e-gateway-class
       listeners:
@@ -72,7 +72,7 @@ gateways:
                 kind: TLSRoute
 
 grpcRoutes:
-  - name: e2e-grpc
+  e2e-grpc:
     spec:
       parentRefs:
         - group: gateway.networking.k8s.io
@@ -96,7 +96,7 @@ grpcRoutes:
               port: 9090
 
 httpRoutes:
-  - name: e2e-http
+  e2e-http:
     spec:
       parentRefs:
         - group: gateway.networking.k8s.io
@@ -119,7 +119,7 @@ httpRoutes:
               port: 8080
 
 referenceGrants:
-  - name: e2e-referencegrant
+  e2e-referencegrant:
     spec:
       from:
         - group: gateway.networking.k8s.io
@@ -133,7 +133,7 @@ referenceGrants:
           kind: Secret
 
 tlsRoutes:
-  - name: e2e-tls
+  e2e-tls:
     spec:
       parentRefs:
         - group: gateway.networking.k8s.io

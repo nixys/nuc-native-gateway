@@ -45,7 +45,7 @@ Support for individual kinds and fields still depends on the Gateway API bundle 
 
 ## Values Model
 
-Each top-level list in [values.yaml](values.yaml) maps to one resource kind:
+Each top-level map in [values.yaml](values.yaml) maps resource names to one resource kind:
 
 - `backendTLSPolicies`
 - `gatewayClasses`
@@ -56,11 +56,11 @@ Each top-level list in [values.yaml](values.yaml) maps to one resource kind:
 - `referenceGrants`
 - `tlsRoutes`
 
-Every list item uses the same generic contract:
+Every map entry uses the same generic contract:
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `name` | yes | Resource name. |
+| map key | yes | Resource name used for `metadata.name`. |
 | `namespace` | no | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped resources. |
 | `labels` | no | Labels merged on top of built-in chart labels and `commonLabels`. |
 | `annotations` | no | Annotations merged on top of `commonAnnotations`. |
@@ -88,7 +88,7 @@ This section is generated from [values.yaml](values.yaml) by `helm-docs`. Edit [
 - [values.yaml](values.yaml): minimal defaults that render no resources.
 - [values.yaml.example](values.yaml.example): complete example covering every supported resource type.
 
-Use [values.yaml.example](values.yaml.example) as a starting point and remove the sections you do not need.
+Use [values.yaml.example](values.yaml.example) as a starting point and remove the resource-name keys you do not need.
 
 ## Testing
 

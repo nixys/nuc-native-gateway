@@ -29,8 +29,8 @@ class SmokeContext:
         return self.repo_root / "tests" / "smokes" / "fixtures" / "rendering-contract.values.yaml"
 
     @property
-    def invalid_missing_name_values(self) -> Path:
-        return self.repo_root / "tests" / "smokes" / "fixtures" / "invalid-missing-name.values.yaml"
+    def invalid_list_contract_values(self) -> Path:
+        return self.repo_root / "tests" / "smokes" / "fixtures" / "invalid-list-contract.values.yaml"
 
 
 def check_default_empty(context: SmokeContext) -> None:
@@ -47,22 +47,22 @@ def check_default_empty(context: SmokeContext) -> None:
     render.assert_doc_count(documents, 0)
 
 
-def check_schema_invalid_missing_name(context: SmokeContext) -> None:
+def check_schema_invalid_list_contract(context: SmokeContext) -> None:
     result = helm.lint(
         context.chart_dir,
-        values_file=context.invalid_missing_name_values,
+        values_file=context.invalid_list_contract_values,
         workdir=context.workdir,
         check=False,
     )
     if result.returncode == 0:
         raise system.TestFailure(
-            "helm lint unexpectedly succeeded for invalid values without resource name"
+            "helm lint unexpectedly succeeded for invalid list-based values"
         )
 
     combined_output = f"{result.stdout}\n{result.stderr}"
-    if "name" not in combined_output:
+    if "gateways" not in combined_output or "object" not in combined_output:
         raise system.TestFailure(
-            "helm lint failed for invalid values, but the error does not mention the missing name field"
+            "helm lint failed for invalid values, but the error does not mention the object-based map contract"
         )
 
 
@@ -194,7 +194,7 @@ def check_example_kubeconform(context: SmokeContext) -> None:
 
 SCENARIOS: list[tuple[str, Callable[[SmokeContext], None]]] = [
     ("default-empty", check_default_empty),
-    ("schema-invalid-missing-name", check_schema_invalid_missing_name),
+    ("schema-invalid-list-contract", check_schema_invalid_list_contract),
     ("rendering-contract", check_rendering_contract),
     ("example-render", check_example_render),
     ("example-kubeconform", check_example_kubeconform),

@@ -49,36 +49,36 @@
       }
     },
     "backendTLSPolicies": {
-      "$ref": "#/definitions/resourceList",
-      "description": "List of BackendTLSPolicy resources."
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of BackendTLSPolicy resources keyed by resource name."
     },
     "gatewayClasses": {
-      "$ref": "#/definitions/resourceList",
-      "description": "List of GatewayClass resources."
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of GatewayClass resources keyed by resource name."
     },
     "gateways": {
-      "$ref": "#/definitions/resourceList",
-      "description": "List of Gateway resources."
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of Gateway resources keyed by resource name."
     },
     "grpcRoutes": {
-      "$ref": "#/definitions/resourceList",
-      "description": "List of GRPCRoute resources."
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of GRPCRoute resources keyed by resource name."
     },
     "httpRoutes": {
-      "$ref": "#/definitions/resourceList",
-      "description": "List of HTTPRoute resources."
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of HTTPRoute resources keyed by resource name."
     },
     "listenerSets": {
-      "$ref": "#/definitions/resourceList",
-      "description": "List of ListenerSet resources."
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of ListenerSet resources keyed by resource name."
     },
     "referenceGrants": {
-      "$ref": "#/definitions/resourceList",
-      "description": "List of ReferenceGrant resources."
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of ReferenceGrant resources keyed by resource name."
     },
     "tlsRoutes": {
-      "$ref": "#/definitions/resourceList",
-      "description": "List of TLSRoute resources."
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of TLSRoute resources keyed by resource name."
     }
   },
   "definitions": {
@@ -105,14 +105,7 @@
     "resourceItem": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "name"
-      ],
       "properties": {
-        "name": {
-          "$ref": "#/definitions/nonEmptyString",
-          "description": "Resource name."
-        },
         "namespace": {
           "$ref": "#/definitions/nonEmptyString",
           "description": "Namespace for namespaced resources. Ignored for cluster-scoped kinds."
@@ -139,10 +132,13 @@
         }
       }
     },
-    "resourceList": {
-      "type": "array",
-      "default": [],
-      "items": {
+    "resourceMap": {
+      "type": "object",
+      "default": {},
+      "propertyNames": {
+        "$ref": "#/definitions/nonEmptyString"
+      },
+      "additionalProperties": {
         "$ref": "#/definitions/resourceItem"
       }
     }

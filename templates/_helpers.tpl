@@ -16,15 +16,15 @@ helm.sh/chart: {{ include "nuc-native-gateway.chart" . }}
 {{- define "nuc-native-gateway.renderResource" -}}
 {{- $root := .root -}}
 {{- $item := .item -}}
-{{- $resourceKey := .resourceKey -}}
+{{- $resourceName := .resourceName -}}
 {{- $defaultLabels := include "nuc-native-gateway.labels" $root | fromYaml -}}
 {{- $labels := mustMergeOverwrite (dict) $defaultLabels ($root.Values.commonLabels | default dict) ($item.labels | default dict) -}}
 {{- $annotations := mustMergeOverwrite (dict) ($root.Values.commonAnnotations | default dict) ($item.annotations | default dict) -}}
-{{- if ne $item.name "__helm_docs_example__" }}
+{{- if ne $resourceName "__helm_docs_example__" }}
 apiVersion: {{ default .defaultApiVersion $item.apiVersion }}
 kind: {{ .kind }}
 metadata:
-  name: {{ required (printf "%s.name is required" $resourceKey) $item.name }}
+  name: {{ $resourceName }}
   {{- if .namespaced }}
   namespace: {{ default $root.Release.Namespace $item.namespace }}
   {{- end }}
@@ -43,4 +43,19 @@ status:
 {{ toYaml . | nindent 2 }}
 {{- end }}
 {{- end }}
+{{- end -}}
+{{- define "nuc-native-gateway.renderResources" -}}
+{{- $collection := .collection | default dict -}}
+{{- range $resourceName := keys $collection | sortAlpha }}
+{{- $item := get $collection $resourceName -}}
+---
+{{ include "nuc-native-gateway.renderResource" (dict
+  "root" $.root
+  "item" $item
+  "resourceName" $resourceName
+  "kind" $.kind
+  "defaultApiVersion" $.defaultApiVersion
+  "namespaced" $.namespaced
+) }}
+{{ end }}
 {{- end -}}

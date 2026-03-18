@@ -24,7 +24,7 @@ apiVersions:
 
 # Backend TLS policies attached to Services.
 backendTLSPolicies:
-  - name: backend-tls-with-ca
+  backend-tls-with-ca:
     namespace: app-a
     labels:
       component: backend-tls
@@ -50,7 +50,7 @@ backendTLSPolicies:
       options:
         example.com/min-version: "1.3"
         example.com/cipher-suites: TLS_AES_128_GCM_SHA256
-  - name: backend-tls-with-wellknown
+  backend-tls-with-wellknown:
     namespace: app-b
     labels:
       component: backend-tls
@@ -69,7 +69,7 @@ backendTLSPolicies:
 
 # Cluster-scoped GatewayClass resources.
 gatewayClasses:
-  - name: public-gateway-class
+  public-gateway-class:
     labels:
       component: gateway-class
     annotations:
@@ -85,7 +85,7 @@ gatewayClasses:
 
 # Gateways that expose listeners to routes.
 gateways:
-  - name: edge-gateway
+  edge-gateway:
     namespace: edge-ns
     labels:
       component: gateway
@@ -150,7 +150,7 @@ gateways:
 
 # GRPCRoute examples with filters, weighted backends, and session persistence.
 grpcRoutes:
-  - name: inventory-grpc
+  inventory-grpc:
     namespace: apps
     labels:
       component: grpc-route
@@ -241,7 +241,7 @@ grpcRoutes:
 
 # HTTPRoute examples with matches, redirects, rewrites, CORS, retries, and sessions.
 httpRoutes:
-  - name: api-http
+  api-http:
     namespace: apps
     labels:
       component: http-route
@@ -393,7 +393,7 @@ httpRoutes:
 
 # ListenerSet example for shared listeners.
 listenerSets:
-  - name: shared-listeners
+  shared-listeners:
     namespace: apps
     labels:
       component: listener-set
@@ -435,7 +435,7 @@ listenerSets:
 
 # Reference grants for cross-namespace access.
 referenceGrants:
-  - name: allow-backend-refs
+  allow-backend-refs:
     namespace: backend
     labels:
       component: reference-grant
@@ -458,7 +458,7 @@ referenceGrants:
 
 # TLSRoute example for SNI-based passthrough traffic.
 tlsRoutes:
-  - name: passthrough-tls
+  passthrough-tls:
     namespace: apps
     labels:
       component: tls-route

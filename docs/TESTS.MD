@@ -163,7 +163,7 @@ tests/smokes/
 ├── helpers/
 │   └── argparser.py
 ├── fixtures/
-│   ├── invalid-missing-name.values.yaml
+│   ├── invalid-list-contract.values.yaml
 │   └── rendering-contract.values.yaml
 ├── run/
 │   └── smoke.py
@@ -185,8 +185,8 @@ The smoke suite currently covers:
 1. `default-empty`
    Verifies that the chart renders no manifests with default values.
 
-2. `schema-invalid-missing-name`
-   Verifies that `values.schema.json` is active and rejects a resource item without `name`.
+2. `schema-invalid-list-contract`
+   Verifies that `values.schema.json` is active and rejects the old list-based contract for top-level resource collections.
 
 3. `rendering-contract`
    Verifies chart-owned behavior rather than CRD payload content:

@@ -45,7 +45,7 @@ Support for individual kinds and fields still depends on the Gateway API bundle 
 
 ## Values Model
 
-Each top-level list in [values.yaml](values.yaml) maps to one resource kind:
+Each top-level map in [values.yaml](values.yaml) maps resource names to one resource kind:
 
 - `backendTLSPolicies`
 - `gatewayClasses`
@@ -56,11 +56,11 @@ Each top-level list in [values.yaml](values.yaml) maps to one resource kind:
 - `referenceGrants`
 - `tlsRoutes`
 
-Every list item uses the same generic contract:
+Every map entry uses the same generic contract:
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `name` | yes | Resource name. |
+| map key | yes | Resource name used for `metadata.name`. |
 | `namespace` | no | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped resources. |
 | `labels` | no | Labels merged on top of built-in chart labels and `commonLabels`. |
 | `annotations` | no | Annotations merged on top of `commonAnnotations`. |
@@ -91,80 +91,72 @@ This section is generated from [values.yaml](values.yaml) by `helm-docs`. Edit [
 | apiVersions.listenerSet | string | `"gateway.networking.k8s.io/v1"` | Default apiVersion for ListenerSet resources. |
 | apiVersions.referenceGrant | string | `"gateway.networking.k8s.io/v1"` | Default apiVersion for ReferenceGrant resources. |
 | apiVersions.tlsRoute | string | `"gateway.networking.k8s.io/v1"` | Default apiVersion for TLSRoute resources. |
-| backendTLSPolicies | list | [] | BackendTLSPolicy resources to render. |
-| backendTLSPolicies[0].annotations | object | `{}` | Resource-specific annotations. |
-| backendTLSPolicies[0].apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
-| backendTLSPolicies[0].labels | object | `{}` | Resource-specific labels. |
-| backendTLSPolicies[0].name | string | required | Resource name. |
-| backendTLSPolicies[0].namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| backendTLSPolicies[0].spec | object | `{}` | Resource spec rendered as-is. |
-| backendTLSPolicies[0].status | object | `{}` | Optional resource status rendered as-is. |
+| backendTLSPolicies | object | {} | BackendTLSPolicy resources keyed by resource name. |
+| backendTLSPolicies.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| backendTLSPolicies.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| backendTLSPolicies.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| backendTLSPolicies.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
+| backendTLSPolicies.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| backendTLSPolicies.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
 | commonAnnotations | object | `{}` | Extra annotations applied to every rendered resource. |
 | commonLabels | object | `{}` | Extra labels applied to every rendered resource. |
-| gatewayClasses | list | [] | GatewayClass resources to render. |
-| gatewayClasses[0].annotations | object | `{}` | Resource-specific annotations. |
-| gatewayClasses[0].apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
-| gatewayClasses[0].labels | object | `{}` | Resource-specific labels. |
-| gatewayClasses[0].name | string | required | Resource name. |
-| gatewayClasses[0].namespace | string | "" | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| gatewayClasses[0].spec | object | `{}` | Resource spec rendered as-is. |
-| gatewayClasses[0].status | object | `{}` | Optional resource status rendered as-is. |
-| gateways | list | [] | Gateway resources to render. |
-| gateways[0].annotations | object | `{}` | Resource-specific annotations. |
-| gateways[0].apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
-| gateways[0].labels | object | `{}` | Resource-specific labels. |
-| gateways[0].name | string | required | Resource name. |
-| gateways[0].namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| gateways[0].spec | object | `{}` | Resource spec rendered as-is. |
-| gateways[0].status | object | `{}` | Optional resource status rendered as-is. |
-| grpcRoutes | list | [] | GRPCRoute resources to render. |
-| grpcRoutes[0].annotations | object | `{}` | Resource-specific annotations. |
-| grpcRoutes[0].apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
-| grpcRoutes[0].labels | object | `{}` | Resource-specific labels. |
-| grpcRoutes[0].name | string | required | Resource name. |
-| grpcRoutes[0].namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| grpcRoutes[0].spec | object | `{}` | Resource spec rendered as-is. |
-| grpcRoutes[0].status | object | `{}` | Optional resource status rendered as-is. |
-| httpRoutes | list | [] | HTTPRoute resources to render. |
-| httpRoutes[0].annotations | object | `{}` | Resource-specific annotations. |
-| httpRoutes[0].apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
-| httpRoutes[0].labels | object | `{}` | Resource-specific labels. |
-| httpRoutes[0].name | string | required | Resource name. |
-| httpRoutes[0].namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| httpRoutes[0].spec | object | `{}` | Resource spec rendered as-is. |
-| httpRoutes[0].status | object | `{}` | Optional resource status rendered as-is. |
-| listenerSets | list | [] | ListenerSet resources to render. |
-| listenerSets[0].annotations | object | `{}` | Resource-specific annotations. |
-| listenerSets[0].apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
-| listenerSets[0].labels | object | `{}` | Resource-specific labels. |
-| listenerSets[0].name | string | required | Resource name. |
-| listenerSets[0].namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| listenerSets[0].spec | object | `{}` | Resource spec rendered as-is. |
-| listenerSets[0].status | object | `{}` | Optional resource status rendered as-is. |
+| gatewayClasses | object | {} | GatewayClass resources keyed by resource name. |
+| gatewayClasses.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| gatewayClasses.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| gatewayClasses.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| gatewayClasses.__helm_docs_example__.namespace | string | "" | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
+| gatewayClasses.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| gatewayClasses.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| gateways | object | {} | Gateway resources keyed by resource name. |
+| gateways.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| gateways.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| gateways.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| gateways.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
+| gateways.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| gateways.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| grpcRoutes | object | {} | GRPCRoute resources keyed by resource name. |
+| grpcRoutes.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| grpcRoutes.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| grpcRoutes.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| grpcRoutes.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
+| grpcRoutes.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| grpcRoutes.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| httpRoutes | object | {} | HTTPRoute resources keyed by resource name. |
+| httpRoutes.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| httpRoutes.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| httpRoutes.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| httpRoutes.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
+| httpRoutes.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| httpRoutes.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| listenerSets | object | {} | ListenerSet resources keyed by resource name. |
+| listenerSets.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| listenerSets.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| listenerSets.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| listenerSets.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
+| listenerSets.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| listenerSets.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
 | nameOverride | string | `""` | Override the default chart label name if needed. |
-| referenceGrants | list | [] | ReferenceGrant resources to render. |
-| referenceGrants[0].annotations | object | `{}` | Resource-specific annotations. |
-| referenceGrants[0].apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
-| referenceGrants[0].labels | object | `{}` | Resource-specific labels. |
-| referenceGrants[0].name | string | required | Resource name. |
-| referenceGrants[0].namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| referenceGrants[0].spec | object | `{}` | Resource spec rendered as-is. |
-| referenceGrants[0].status | object | `{}` | Optional resource status rendered as-is. |
-| tlsRoutes | list | [] | TLSRoute resources to render. |
-| tlsRoutes[0].annotations | object | `{}` | Resource-specific annotations. |
-| tlsRoutes[0].apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
-| tlsRoutes[0].labels | object | `{}` | Resource-specific labels. |
-| tlsRoutes[0].name | string | required | Resource name. |
-| tlsRoutes[0].namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| tlsRoutes[0].spec | object | `{}` | Resource spec rendered as-is. |
-| tlsRoutes[0].status | object | `{}` | Optional resource status rendered as-is. |
+| referenceGrants | object | {} | ReferenceGrant resources keyed by resource name. |
+| referenceGrants.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| referenceGrants.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| referenceGrants.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| referenceGrants.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
+| referenceGrants.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| referenceGrants.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| tlsRoutes | object | {} | TLSRoute resources keyed by resource name. |
+| tlsRoutes.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
+| tlsRoutes.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
+| tlsRoutes.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
+| tlsRoutes.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
+| tlsRoutes.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
+| tlsRoutes.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
 
 ## Included Values Files
 
 - [values.yaml](values.yaml): minimal defaults that render no resources.
 - [values.yaml.example](values.yaml.example): complete example covering every supported resource type.
 
-Use [values.yaml.example](values.yaml.example) as a starting point and remove the sections you do not need.
+Use [values.yaml.example](values.yaml.example) as a starting point and remove the resource-name keys you do not need.
 
 ## Testing
 

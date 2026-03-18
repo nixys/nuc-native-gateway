@@ -13,7 +13,7 @@ apiVersions:
   gatewayClass: gateway.networking.k8s.io/v1beta1
 
 gateways:
-  - name: merged-gateway
+  merged-gateway:
     apiVersion: example.net/v1alpha1
     labels:
       component: gateway
@@ -24,7 +24,7 @@ gateways:
       gatewayClassName: public-gateway-class
 
 gatewayClasses:
-  - name: public-gateway-class
+  public-gateway-class:
     namespace: should-not-render
     labels:
       component: gateway-class

@@ -55,7 +55,7 @@ smoke_tests:
     - >
       python3 tests/smokes/run/smoke.py
       --scenario default-empty
-      --scenario schema-invalid-missing-name
+      --scenario schema-invalid-list-contract
       --scenario rendering-contract
       --scenario example-render
       --scenario example-kubeconform
