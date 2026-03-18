@@ -3,6 +3,10 @@ README.md
 .git*
 tmp
 *.tgz
+*.tar
+*.tar.gz
+*.tar.xz
+*.tar.bz2
 docs/
 samples/
 tests/
