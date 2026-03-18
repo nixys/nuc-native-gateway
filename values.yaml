@@ -36,25 +36,169 @@ apiVersions:
 # - status: optional raw status block for fixtures and synthetic manifests
 
 # -- BackendTLSPolicy resources to render.
-backendTLSPolicies: []
+# @default -- []
+backendTLSPolicies:
+  - # -- Resource name.
+    # @default -- required
+    name: __helm_docs_example__
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: gateway.networking.k8s.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
 
 # -- GatewayClass resources to render.
-gatewayClasses: []
+# @default -- []
+gatewayClasses:
+  - # -- Resource name.
+    # @default -- required
+    name: __helm_docs_example__
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
+    # @default -- ""
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: gateway.networking.k8s.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
 
 # -- Gateway resources to render.
-gateways: []
+# @default -- []
+gateways:
+  - # -- Resource name.
+    # @default -- required
+    name: __helm_docs_example__
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: gateway.networking.k8s.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
 
 # -- GRPCRoute resources to render.
-grpcRoutes: []
+# @default -- []
+grpcRoutes:
+  - # -- Resource name.
+    # @default -- required
+    name: __helm_docs_example__
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: gateway.networking.k8s.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
 
 # -- HTTPRoute resources to render.
-httpRoutes: []
+# @default -- []
+httpRoutes:
+  - # -- Resource name.
+    # @default -- required
+    name: __helm_docs_example__
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: gateway.networking.k8s.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
 
 # -- ListenerSet resources to render.
-listenerSets: []
+# @default -- []
+listenerSets:
+  - # -- Resource name.
+    # @default -- required
+    name: __helm_docs_example__
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: gateway.networking.k8s.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
 
 # -- ReferenceGrant resources to render.
-referenceGrants: []
+# @default -- []
+referenceGrants:
+  - # -- Resource name.
+    # @default -- required
+    name: __helm_docs_example__
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: gateway.networking.k8s.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}
 
 # -- TLSRoute resources to render.
-tlsRoutes: []
+# @default -- []
+tlsRoutes:
+  - # -- Resource name.
+    # @default -- required
+    name: __helm_docs_example__
+    # -- Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds.
+    # @default -- release namespace
+    namespace: documentation-placeholder
+    # -- Resource-specific labels.
+    labels: {}
+    # -- Resource-specific annotations.
+    annotations: {}
+    # -- Per-resource apiVersion override.
+    # @default -- chart default for this kind
+    apiVersion: gateway.networking.k8s.io/v1
+    # -- Resource spec rendered as-is.
+    spec: {}
+    # -- Optional resource status rendered as-is.
+    status: {}

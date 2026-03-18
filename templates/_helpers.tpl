@@ -20,6 +20,7 @@ helm.sh/chart: {{ include "nuc-native-gateway.chart" . }}
 {{- $defaultLabels := include "nuc-native-gateway.labels" $root | fromYaml -}}
 {{- $labels := mustMergeOverwrite (dict) $defaultLabels ($root.Values.commonLabels | default dict) ($item.labels | default dict) -}}
 {{- $annotations := mustMergeOverwrite (dict) ($root.Values.commonAnnotations | default dict) ($item.annotations | default dict) -}}
+{{- if ne $item.name "__helm_docs_example__" }}
 apiVersion: {{ default .defaultApiVersion $item.apiVersion }}
 kind: {{ .kind }}
 metadata:
@@ -40,5 +41,6 @@ spec:
 {{- with $item.status }}
 status:
 {{ toYaml . | nindent 2 }}
+{{- end }}
 {{- end }}
 {{- end -}}
