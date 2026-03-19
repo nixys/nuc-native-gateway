@@ -1,0 +1,7 @@
+{{ include "nuc-native-gateway.renderResources" (dict
+  "root" $
+  "collection" ($.Values.gateways | default dict)
+  "kind" "Gateway"
+  "defaultApiVersion" $.Values.apiVersions.gateway
+  "namespaced" true
+) }}

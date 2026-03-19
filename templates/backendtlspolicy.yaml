@@ -1,0 +1,7 @@
+{{ include "nuc-native-gateway.renderResources" (dict
+  "root" $
+  "collection" ($.Values.backendTLSPolicies | default dict)
+  "kind" "BackendTLSPolicy"
+  "defaultApiVersion" $.Values.apiVersions.backendTLSPolicy
+  "namespaced" true
+) }}

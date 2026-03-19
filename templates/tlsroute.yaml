@@ -1,0 +1,7 @@
+{{ include "nuc-native-gateway.renderResources" (dict
+  "root" $
+  "collection" ($.Values.tlsRoutes | default dict)
+  "kind" "TLSRoute"
+  "defaultApiVersion" $.Values.apiVersions.tlsRoute
+  "namespaced" true
+) }}

@@ -1,0 +1,7 @@
+{{ include "nuc-native-gateway.renderResources" (dict
+  "root" $
+  "collection" ($.Values.grpcRoutes | default dict)
+  "kind" "GRPCRoute"
+  "defaultApiVersion" $.Values.apiVersions.grpcRoute
+  "namespaced" true
+) }}

@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "nuc-native-gateway values",
+  "description": "Schema for nuc-native-gateway Helm chart values.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "nameOverride": {
+      "type": "string",
+      "description": "Override the chart name used in generated labels."
+    },
+    "commonLabels": {
+      "$ref": "#/definitions/stringMap",
+      "description": "Labels merged into every rendered resource."
+    },
+    "commonAnnotations": {
+      "$ref": "#/definitions/stringMap",
+      "description": "Annotations merged into every rendered resource."
+    },
+    "apiVersions": {
+      "type": "object",
+      "description": "Default API version overrides per supported Gateway API kind.",
+      "additionalProperties": false,
+      "properties": {
+        "backendTLSPolicy": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "gatewayClass": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "gateway": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "grpcRoute": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "httpRoute": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "listenerSet": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "referenceGrant": {
+          "$ref": "#/definitions/nonEmptyString"
+        },
+        "tlsRoute": {
+          "$ref": "#/definitions/nonEmptyString"
+        }
+      }
+    },
+    "backendTLSPolicies": {
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of BackendTLSPolicy resources keyed by resource name."
+    },
+    "gatewayClasses": {
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of GatewayClass resources keyed by resource name."
+    },
+    "gateways": {
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of Gateway resources keyed by resource name."
+    },
+    "grpcRoutes": {
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of GRPCRoute resources keyed by resource name."
+    },
+    "httpRoutes": {
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of HTTPRoute resources keyed by resource name."
+    },
+    "listenerSets": {
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of ListenerSet resources keyed by resource name."
+    },
+    "referenceGrants": {
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of ReferenceGrant resources keyed by resource name."
+    },
+    "tlsRoutes": {
+      "$ref": "#/definitions/resourceMap",
+      "description": "Map of TLSRoute resources keyed by resource name."
+    }
+  },
+  "definitions": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stringMap": {
+      "type": "object",
+      "default": {},
+      "propertyNames": {
+        "type": "string",
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "freeFormObject": {
+      "type": "object",
+      "description": "Arbitrary Gateway API payload passed through by the chart.",
+      "additionalProperties": true
+    },
+    "resourceItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "namespace": {
+          "$ref": "#/definitions/nonEmptyString",
+          "description": "Namespace for namespaced resources. Ignored for cluster-scoped kinds."
+        },
+        "labels": {
+          "$ref": "#/definitions/stringMap",
+          "description": "Resource-specific labels."
+        },
+        "annotations": {
+          "$ref": "#/definitions/stringMap",
+          "description": "Resource-specific annotations."
+        },
+        "apiVersion": {
+          "$ref": "#/definitions/nonEmptyString",
+          "description": "Per-resource API version override."
+        },
+        "spec": {
+          "$ref": "#/definitions/freeFormObject",
+          "description": "Resource spec rendered as-is."
+        },
+        "status": {
+          "$ref": "#/definitions/freeFormObject",
+          "description": "Optional resource status rendered as-is."
+        }
+      }
+    },
+    "resourceMap": {
+      "type": "object",
+      "default": {},
+      "propertyNames": {
+        "$ref": "#/definitions/nonEmptyString"
+      },
+      "additionalProperties": {
+        "$ref": "#/definitions/resourceItem"
+      }
+    }
+  }
+}

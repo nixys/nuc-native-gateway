@@ -1,0 +1,7 @@
+{{ include "nuc-native-gateway.renderResources" (dict
+  "root" $
+  "collection" ($.Values.httpRoutes | default dict)
+  "kind" "HTTPRoute"
+  "defaultApiVersion" $.Values.apiVersions.httpRoute
+  "namespaced" true
+) }}
