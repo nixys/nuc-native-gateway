@@ -2,6 +2,11 @@
 # Render with:
 #   helm template nuc-native-gateway . -f values.yaml.example
 
+enabled: true
+
+# Accepted for umbrella-chart compatibility; ignored by this chart.
+global: {}
+
 # Override the generated chart name if needed.
 nameOverride: ""
 

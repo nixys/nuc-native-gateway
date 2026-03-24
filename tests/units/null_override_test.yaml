@@ -1,0 +1,41 @@
+suite: null override contract
+templates:
+  - templates/gateway.yaml
+  - templates/gatewayclass.yaml
+release:
+  name: unit-test
+  namespace: unit-namespace
+
+tests:
+  - it: suppresses a default resource when the override file sets it to null
+    values:
+      - ../../values.yaml.example
+      - values/null_override.values.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: templates/gateway.yaml
+      - hasDocuments:
+          count: 1
+        template: templates/gatewayclass.yaml
+      - containsDocument:
+          kind: GatewayClass
+          apiVersion: gateway.networking.k8s.io/v1
+          name: public-gateway-class
+          any: true
+        template: templates/gatewayclass.yaml
+
+  - it: keeps unaffected resources after null override
+    values:
+      - ../../values.yaml.example
+      - values/null_override.values.yaml
+    template: templates/gatewayclass.yaml
+    documentSelector:
+      path: metadata.name
+      value: public-gateway-class
+    asserts:
+      - isKind:
+          of: GatewayClass
+      - equal:
+          path: spec.controllerName
+          value: example.net/gateway-controller

@@ -46,16 +46,22 @@ status:
 {{- end -}}
 {{- define "nuc-native-gateway.renderResources" -}}
 {{- $collection := .collection | default dict -}}
-{{- range $resourceName := keys $collection | sortAlpha }}
+{{- $documents := list -}}
+{{- range $resourceName := keys $collection | sortAlpha -}}
 {{- $item := get $collection $resourceName -}}
----
-{{ include "nuc-native-gateway.renderResource" (dict
+{{- if kindIs "map" $item -}}
+{{- $rendered := include "nuc-native-gateway.renderResource" (dict
   "root" $.root
   "item" $item
   "resourceName" $resourceName
   "kind" $.kind
   "defaultApiVersion" $.defaultApiVersion
   "namespaced" $.namespaced
-) }}
-{{ end }}
+) -}}
+{{- if $rendered -}}
+{{- $documents = append $documents $rendered -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- join "\n---\n" $documents -}}
 {{- end -}}

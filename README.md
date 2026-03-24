@@ -68,8 +68,12 @@ Every map entry uses the same generic contract:
 | `spec` | no | Raw resource spec rendered as-is. |
 | `status` | no | Optional raw status block. Usually not managed through Helm in production. |
 
+In a higher-precedence values file, set a map entry to `null` to suppress a default resource from a lower-precedence values file.
+
 Global controls:
 
+- `enabled`
+- `global` (accepted for umbrella-chart compatibility and ignored by this chart)
 - `nameOverride`
 - `commonLabels`
 - `commonAnnotations`
@@ -100,6 +104,7 @@ This section is generated from [values.yaml](values.yaml) by `helm-docs`. Edit [
 | backendTLSPolicies.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
 | commonAnnotations | object | `{}` | Extra annotations applied to every rendered resource. |
 | commonLabels | object | `{}` | Extra labels applied to every rendered resource. |
+| enabled | bool | `true` | Enable nuc-native-gateway chart rendering. |
 | gatewayClasses | object | {} | GatewayClass resources keyed by resource name. |
 | gatewayClasses.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
 | gatewayClasses.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
@@ -114,6 +119,7 @@ This section is generated from [values.yaml](values.yaml) by `helm-docs`. Edit [
 | gateways.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
 | gateways.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
 | gateways.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| global | object | `{}` | Compatibility values inherited from umbrella charts. Accepted but ignored by this chart. |
 | grpcRoutes | object | {} | GRPCRoute resources keyed by resource name. |
 | grpcRoutes.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
 | grpcRoutes.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
