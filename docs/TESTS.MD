@@ -7,6 +7,7 @@ This chart uses three complementary automated test layers:
 - `tests/smokes/` for smoke scenarios that exercise full render flows
 
 GitLab CI runs linting, unit tests, smoke tests, backward compatibility rendering, full example rendering, and `kubeconform`. The e2e layer is kept local because it has heavier infrastructure requirements and depends on Docker, kind, and outbound network access.
+CI sets `KUBECONFORM_SKIP_KINDS` to include Gateway API kinds that lack schemas in the selected catalog (`ListenerSet`, `ReferenceGrant`, `TLSRoute`).
 
 ## Unit Tests
 
