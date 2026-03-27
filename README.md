@@ -1,5 +1,7 @@
 # NUC Native Gateway
 
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/nuc-native-gateway)](https://artifacthub.io/packages/search?repo=nuc-native-gateway)
+
 Helm chart for rendering Kubernetes Gateway API resources from declarative values.
 
 The chart does not install Gateway API CRDs or any controller. It only renders Gateway API objects that are already supported by the target cluster and controller.
