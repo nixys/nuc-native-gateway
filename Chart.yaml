@@ -3,7 +3,7 @@ apiVersion: v2
 name: nuc-native-gateway
 description: Helm chart for Kubernetes Gateway API standard resources
 type: application
-version: 1.0.0-rc8
+version: 1.0.0-rc9
 appVersion: "v1"
 icon: https://registry.nixys.ru/logo.png
 home: https://github.com/nixys/nuc-native-gateway
