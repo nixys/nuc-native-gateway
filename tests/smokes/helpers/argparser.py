@@ -1,12 +1,20 @@
 import argparse
 import os
 from pathlib import Path
+from typing import Optional
 
 
 DEFAULT_SCHEMA_LOCATION = (
     "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/"
     "{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
 )
+DEFAULT_SKIP_KINDS = "ListenerSet,ReferenceGrant,TLSRoute"
+
+
+def _merge_skip_kinds(env_value: Optional[str]) -> str:
+    if env_value:
+        return f"{env_value},{DEFAULT_SKIP_KINDS}"
+    return DEFAULT_SKIP_KINDS
 
 SCENARIO_CHOICES = [
     "all",
@@ -64,9 +72,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--skip-kinds",
-        default=os.environ.get(
-            "KUBECONFORM_SKIP_KINDS", "ListenerSet,ReferenceGrant,TLSRoute"
-        ),
+        default=_merge_skip_kinds(os.environ.get("KUBECONFORM_SKIP_KINDS")),
         help="Comma-separated kinds to skip in kubeconform.",
     )
     parser.add_argument(

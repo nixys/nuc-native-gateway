@@ -201,6 +201,7 @@ The smoke suite currently covers:
 
 5. `example-kubeconform`
    Renders `values.yaml.example` and validates the result with `kubeconform` using the same Gateway API CRD schema location as CI.
+   This scenario always skips `ListenerSet`, `ReferenceGrant`, and `TLSRoute` because the selected schema catalog does not serve those kinds.
 
 ## Prerequisites
 
