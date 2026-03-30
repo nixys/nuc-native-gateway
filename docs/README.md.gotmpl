@@ -11,18 +11,15 @@ The chart does not install Gateway API CRDs or any controller. It only renders G
 Add the Nixys chart repository:
 
 ```bash
-helm repo add nixys https://registry.nixys.io/chartrepo/public
-# or
-helm repo add nixys https://registry.nixys.ru/chartrepo/public
+helm repo add nixys https://registry.nixys.io/nuc
 ```
 
 Install the chart:
 
 ```bash
-helm install nuc-native-gateway . \
+helm install nuc-native-gateway nixys/nuc-native-gateway \
   --namespace gateway-system \
-  --create-namespace \
-  -f values.yaml.example
+  --create-namespace
 ```
 
 Install the local README generator hook:
