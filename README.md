@@ -8,17 +8,11 @@ The chart does not install Gateway API CRDs or any controller. It only renders G
 
 ## Quick Start
 
-Add the Nixys chart repository:
-
-```bash
-helm repo add nixys https://registry.nixys.io/nuc
-```
-
 Install the chart:
 
 ```bash
-helm install nuc-native-gateway nixys/nuc-native-gateway \
-  --namespace gateway-system \
+helm install nuc-native-gateway oci://registry.nixys.ru/nuc/nuc-native-gateway \
+  --namespace native-gateway \
   --create-namespace
 ```
 
