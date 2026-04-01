@@ -3,7 +3,7 @@ apiVersion: v2
 name: nuc-native-gateway
 description: Helm chart for Kubernetes Gateway API standard resources
 type: application
-version: 1.0.2
+version: 1.0.3
 appVersion: "v1"
 icon: https://registry.nixys.ru/logo.png
 home: https://github.com/nixys/nuc-native-gateway
@@ -32,7 +32,8 @@ annotations:
     - name: Core Helm Chart
       url: https://github.com/nixys/nxs-universal-chart
   artifacthub.io/changes: |
-    - Fix: Change OCI URL
+    - kind: fixed
+      description: Change OCI URL
   artifacthub.io/recommendations: |
     - url: https://nixys.io
     - url: https://github.com/nixys/nuc-native-gateway
