@@ -30,7 +30,7 @@ tests:
           count: 1
         template: templates/grpcroute.yaml
       - hasDocuments:
-          count: 1
+          count: 2
         template: templates/httproute.yaml
       - hasDocuments:
           count: 1
@@ -85,6 +85,12 @@ tests:
           apiVersion: gateway.networking.k8s.io/v1
           name: api-http
           namespace: apps
+          any: true
+        template: templates/httproute.yaml
+      - containsDocument:
+          kind: HTTPRoute
+          apiVersion: gateway.networking.k8s.io/v1
+          name: app-internal
           any: true
         template: templates/httproute.yaml
       - containsDocument:

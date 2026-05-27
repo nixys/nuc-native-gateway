@@ -159,7 +159,7 @@ def check_null_override(context: SmokeContext) -> None:
     )
 
     documents = render.load_documents(output_path)
-    render.assert_doc_count(documents, 8)
+    render.assert_doc_count(documents, 9)
     render.assert_kinds(
         documents,
         {
@@ -196,7 +196,7 @@ def check_example_render(context: SmokeContext) -> None:
     )
 
     documents = render.load_documents(output_path)
-    render.assert_doc_count(documents, 9)
+    render.assert_doc_count(documents, 10)
     render.assert_kinds(
         documents,
         {
