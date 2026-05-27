@@ -395,6 +395,32 @@ httpRoutes:
               name: internal-svc
               port: 8080
       useDefaultGateways: All
+  # Example: referencing services rendered by the same Helm release.
+  # Because spec values are evaluated as Helm templates, you can use
+  # {{ .Release.Name }} or any named template to build the full service name
+  # instead of hardcoding it.
+  app-internal:
+    spec:
+      parentRefs:
+        - group: gateway.networking.k8s.io
+          kind: Gateway
+          name: edge-gateway
+          namespace: edge-ns
+          sectionName: https
+          port: 443
+      hostnames:
+        - app.example.com
+      rules:
+        - backendRefs:
+            - group: ""
+              kind: Service
+              # Resolves to "<release-name>-frontend" at render time.
+              name: '{{ printf "%s-%s" .Release.Name "frontend" }}'
+              port: 8080
+            # When nuc-native-gateway is deployed as a subchart of nxs-universal-chart
+            # (which provides nuc-common helpers), you can also write:
+            #   name: '{{ include "helpers.app.fullname" (dict "name" "frontend" "context" $) }}'
+            # which correctly handles nameOverride, releasePrefix, and deterministicNames.
 
 # ListenerSet example for shared listeners.
 listenerSets:

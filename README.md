@@ -95,8 +95,8 @@ This section is generated from [values.yaml](values.yaml) by `helm-docs`. Edit [
 | backendTLSPolicies.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
 | backendTLSPolicies.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
 | backendTLSPolicies.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| backendTLSPolicies.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
-| backendTLSPolicies.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| backendTLSPolicies.__helm_docs_example__.spec | object | `{}` | Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used. |
+| backendTLSPolicies.__helm_docs_example__.status | object | `{}` | Optional resource status. Helm template expressions inside string values are evaluated. |
 | commonAnnotations | object | `{}` | Extra annotations applied to every rendered resource. |
 | commonLabels | object | `{}` | Extra labels applied to every rendered resource. |
 | enabled | bool | `true` | Enable nuc-native-gateway chart rendering. |
@@ -105,52 +105,52 @@ This section is generated from [values.yaml](values.yaml) by `helm-docs`. Edit [
 | gatewayClasses.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
 | gatewayClasses.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
 | gatewayClasses.__helm_docs_example__.namespace | string | "" | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| gatewayClasses.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
-| gatewayClasses.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| gatewayClasses.__helm_docs_example__.spec | object | `{}` | Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used. |
+| gatewayClasses.__helm_docs_example__.status | object | `{}` | Optional resource status. Helm template expressions inside string values are evaluated. |
 | gateways | object | {} | Gateway resources keyed by resource name. |
 | gateways.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
 | gateways.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
 | gateways.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
 | gateways.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| gateways.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
-| gateways.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| gateways.__helm_docs_example__.spec | object | `{}` | Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used. |
+| gateways.__helm_docs_example__.status | object | `{}` | Optional resource status. Helm template expressions inside string values are evaluated. |
 | global | object | `{}` | Compatibility values inherited from umbrella charts. Accepted but ignored by this chart. |
 | grpcRoutes | object | {} | GRPCRoute resources keyed by resource name. |
 | grpcRoutes.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
 | grpcRoutes.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
 | grpcRoutes.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
 | grpcRoutes.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| grpcRoutes.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
-| grpcRoutes.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| grpcRoutes.__helm_docs_example__.spec | object | `{}` | Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used. |
+| grpcRoutes.__helm_docs_example__.status | object | `{}` | Optional resource status. Helm template expressions inside string values are evaluated. |
 | httpRoutes | object | {} | HTTPRoute resources keyed by resource name. |
 | httpRoutes.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
 | httpRoutes.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
 | httpRoutes.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
 | httpRoutes.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| httpRoutes.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
-| httpRoutes.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| httpRoutes.__helm_docs_example__.spec | object | `{}` | Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used. |
+| httpRoutes.__helm_docs_example__.status | object | `{}` | Optional resource status. Helm template expressions inside string values are evaluated. |
 | listenerSets | object | {} | ListenerSet resources keyed by resource name. |
 | listenerSets.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
 | listenerSets.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
 | listenerSets.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
 | listenerSets.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| listenerSets.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
-| listenerSets.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| listenerSets.__helm_docs_example__.spec | object | `{}` | Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used. |
+| listenerSets.__helm_docs_example__.status | object | `{}` | Optional resource status. Helm template expressions inside string values are evaluated. |
 | nameOverride | string | `""` | Override the default chart label name if needed. |
 | referenceGrants | object | {} | ReferenceGrant resources keyed by resource name. |
 | referenceGrants.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
 | referenceGrants.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
 | referenceGrants.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
 | referenceGrants.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| referenceGrants.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
-| referenceGrants.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| referenceGrants.__helm_docs_example__.spec | object | `{}` | Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used. |
+| referenceGrants.__helm_docs_example__.status | object | `{}` | Optional resource status. Helm template expressions inside string values are evaluated. |
 | tlsRoutes | object | {} | TLSRoute resources keyed by resource name. |
 | tlsRoutes.__helm_docs_example__.annotations | object | `{}` | Resource-specific annotations. |
 | tlsRoutes.__helm_docs_example__.apiVersion | string | chart default for this kind | Per-resource apiVersion override. |
 | tlsRoutes.__helm_docs_example__.labels | object | `{}` | Resource-specific labels. |
 | tlsRoutes.__helm_docs_example__.namespace | string | release namespace | Namespace for namespaced resources. Defaults to the Helm release namespace. Ignored for cluster-scoped kinds. |
-| tlsRoutes.__helm_docs_example__.spec | object | `{}` | Resource spec rendered as-is. |
-| tlsRoutes.__helm_docs_example__.status | object | `{}` | Optional resource status rendered as-is. |
+| tlsRoutes.__helm_docs_example__.spec | object | `{}` | Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used. |
+| tlsRoutes.__helm_docs_example__.status | object | `{}` | Optional resource status. Helm template expressions inside string values are evaluated. |
 
 ## Included Values Files
 

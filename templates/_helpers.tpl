@@ -36,11 +36,11 @@ metadata:
   {{- end }}
 {{- with $item.spec }}
 spec:
-{{ toYaml . | nindent 2 }}
+{{ tpl (toYaml .) $root | nindent 2 }}
 {{- end }}
 {{- with $item.status }}
 status:
-{{ toYaml . | nindent 2 }}
+{{ tpl (toYaml .) $root | nindent 2 }}
 {{- end }}
 {{- end }}
 {{- end -}}

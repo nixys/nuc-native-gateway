@@ -56,9 +56,9 @@ backendTLSPolicies:
     # -- Per-resource apiVersion override.
     # @default -- chart default for this kind
     apiVersion: gateway.networking.k8s.io/v1
-    # -- Resource spec rendered as-is.
+    # -- Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used.
     spec: {}
-    # -- Optional resource status rendered as-is.
+    # -- Optional resource status. Helm template expressions inside string values are evaluated.
     status: {}
 
 # -- GatewayClass resources keyed by resource name.
@@ -75,9 +75,9 @@ gatewayClasses:
     # -- Per-resource apiVersion override.
     # @default -- chart default for this kind
     apiVersion: gateway.networking.k8s.io/v1
-    # -- Resource spec rendered as-is.
+    # -- Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used.
     spec: {}
-    # -- Optional resource status rendered as-is.
+    # -- Optional resource status. Helm template expressions inside string values are evaluated.
     status: {}
 
 # -- Gateway resources keyed by resource name.
@@ -94,9 +94,9 @@ gateways:
     # -- Per-resource apiVersion override.
     # @default -- chart default for this kind
     apiVersion: gateway.networking.k8s.io/v1
-    # -- Resource spec rendered as-is.
+    # -- Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used.
     spec: {}
-    # -- Optional resource status rendered as-is.
+    # -- Optional resource status. Helm template expressions inside string values are evaluated.
     status: {}
 
 # -- GRPCRoute resources keyed by resource name.
@@ -113,9 +113,9 @@ grpcRoutes:
     # -- Per-resource apiVersion override.
     # @default -- chart default for this kind
     apiVersion: gateway.networking.k8s.io/v1
-    # -- Resource spec rendered as-is.
+    # -- Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used.
     spec: {}
-    # -- Optional resource status rendered as-is.
+    # -- Optional resource status. Helm template expressions inside string values are evaluated.
     status: {}
 
 # -- HTTPRoute resources keyed by resource name.
@@ -132,9 +132,9 @@ httpRoutes:
     # -- Per-resource apiVersion override.
     # @default -- chart default for this kind
     apiVersion: gateway.networking.k8s.io/v1
-    # -- Resource spec rendered as-is.
+    # -- Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used.
     spec: {}
-    # -- Optional resource status rendered as-is.
+    # -- Optional resource status. Helm template expressions inside string values are evaluated.
     status: {}
 
 # -- ListenerSet resources keyed by resource name.
@@ -151,9 +151,9 @@ listenerSets:
     # -- Per-resource apiVersion override.
     # @default -- chart default for this kind
     apiVersion: gateway.networking.k8s.io/v1
-    # -- Resource spec rendered as-is.
+    # -- Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used.
     spec: {}
-    # -- Optional resource status rendered as-is.
+    # -- Optional resource status. Helm template expressions inside string values are evaluated.
     status: {}
 
 # -- ReferenceGrant resources keyed by resource name.
@@ -170,9 +170,9 @@ referenceGrants:
     # -- Per-resource apiVersion override.
     # @default -- chart default for this kind
     apiVersion: gateway.networking.k8s.io/v1
-    # -- Resource spec rendered as-is.
+    # -- Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used.
     spec: {}
-    # -- Optional resource status rendered as-is.
+    # -- Optional resource status. Helm template expressions inside string values are evaluated.
     status: {}
 
 # -- TLSRoute resources keyed by resource name.
@@ -189,7 +189,7 @@ tlsRoutes:
     # -- Per-resource apiVersion override.
     # @default -- chart default for this kind
     apiVersion: gateway.networking.k8s.io/v1
-    # -- Resource spec rendered as-is.
+    # -- Resource spec. Helm template expressions inside string values are evaluated, so `{{ .Release.Name }}` and `{{ include "..." }}` can be used.
     spec: {}
-    # -- Optional resource status rendered as-is.
+    # -- Optional resource status. Helm template expressions inside string values are evaluated.
     status: {}
